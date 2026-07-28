@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "yeetlab-checkout",
+  "main": "checkout-worker.js",
+  "compatibility_date": "2026-07-28",
+  "observability": {
+    "enabled": true
+  }
+}

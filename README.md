@@ -1,12 +1,15 @@
 # Yeetlab Shreddo 5 Website
 
-Static product page for GitHub Pages with a simple Stripe Payment Link checkout.
+Static product page for GitHub Pages with Stripe Checkout powered by a small
+Cloudflare Worker.
 
 ## Customize content
 
 - `index.html`: product copy, contact email, product names
 - `styles.css`: visual design
-- `script.js`: prices and Stripe Payment Links
+- `script.js`: browser quantity handling and checkout request
+- `checkout-worker.js`: secure Stripe Checkout Session creation
+- `wrangler.jsonc`: Cloudflare Worker configuration
 - `assets/`: logo and product images
 
 ## Adding future product images
@@ -18,26 +21,23 @@ new file. The main gallery image will switch automatically.
 ## Stripe setup
 
 This is a static GitHub Pages site, so it cannot securely create dynamic Stripe
-Checkout sessions on its own. The simplest setup is Stripe Payment Links.
+Checkout sessions on its own. Checkout sessions are created by the
+`yeetlab-checkout` Cloudflare Worker.
 
-In `script.js`, replace the placeholder link:
+The frontend sends only spare-part product keys and quantities to:
 
-```js
-frame: "https://buy.stripe.com/test_replace-with-shreddo-5-link"
+```txt
+https://yeetlab-checkout.tmw-fpv.workers.dev/checkout
 ```
 
-If you want the add-on checkboxes to lead to exact Stripe totals, create Payment
-Links in Stripe for the combinations you want to support and add them to
-`STRIPE_PAYMENT_LINKS`.
+Stripe Price IDs and the shipping rate are mapped server-side in
+`checkout-worker.js`. The Stripe secret must remain in the Cloudflare Worker
+environment variable `STRIPE_SECRET_KEY`.
 
-Example:
-
-```js
-const STRIPE_PAYMENT_LINKS = {
-  frame: "https://buy.stripe.com/...",
-  "frame+arm": "https://buy.stripe.com/...",
-  "frame+arm+top-plate": "https://buy.stripe.com/..."
-};
+```sh
+npm install
+npm run check
+npm run deploy
 ```
 
 ## GitHub Pages
