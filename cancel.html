@@ -1,23 +1,68 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Payment Cancelled | Yeetlab</title>
-<style>
-body{font-family:Inter,Arial,sans-serif;background:#111;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
-.card{max-width:640px;background:#1b1b1b;padding:40px;border-radius:16px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-h1{font-size:2.2rem;margin-bottom:.5rem}
-p{color:#cfcfcf;line-height:1.6}
-a{display:inline-block;margin-top:24px;padding:14px 24px;background:#fff;color:#111;text-decoration:none;border-radius:10px;font-weight:700}
-</style>
-</head>
-<body>
-<div class="card">
-<h1>Payment cancelled</h1>
-<p>Your payment wasn't completed and no order has been placed.</p>
-<p>You can return to the shop and try again whenever you're ready.</p>
-<a href="./index.html">Return to Shop</a>
-</div>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Your Yeetlab checkout was cancelled and no order was placed."
+    >
+    <title>Payment Cancelled | Yeetlab</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicons/favicon-512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Yeetlab home">
+        <img src="assets/yeetlab-wordmark.png" alt="Yeetlab">
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="./#frame">Frame</a>
+        <a href="./#specs">Specs</a>
+        <a href="./#parts">Parts</a>
+        <a href="./#checkout">Checkout</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="status-section cancel-status">
+        <div class="status-copy">
+          <p class="eyebrow">Checkout cancelled</p>
+          <h1>No order was placed.</h1>
+          <p>
+            Your payment was not completed, so nothing has been charged and no
+            Shreddo 5 order has been submitted.
+          </p>
+          <p>
+            You can return to the configurator, adjust your spare parts, and
+            try again whenever you are ready.
+          </p>
+          <div class="status-actions">
+            <a class="button primary" href="./#checkout">Return to checkout</a>
+            <a class="button ghost" href="./">Back to home</a>
+          </div>
+        </div>
+        <div class="status-mark" aria-hidden="true">
+          <span>Open</span>
+          <strong>Cart</strong>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>&copy; 2026 Yeetlab</span>
+      <div class="footer-links">
+        <a href="mailto:tmw@fpv.com">tmw@fpv.com</a>
+        <a href="https://www.instagram.com/yeetlab.fpv" rel="noopener">Instagram @yeetlab.fpv</a>
+      </div>
+    </footer>
+  </body>
 </html>

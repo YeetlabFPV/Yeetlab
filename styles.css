@@ -500,6 +500,73 @@ legend {
   width: 100%;
 }
 
+.status-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 360px);
+  gap: clamp(28px, 5vw, 70px);
+  min-height: calc(100svh - 155px);
+  align-items: center;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: clamp(58px, 8vw, 104px) clamp(18px, 5vw, 64px);
+}
+
+.status-copy {
+  max-width: 760px;
+}
+
+.status-copy h1 {
+  font-size: clamp(2.55rem, 6.4vw, 6rem);
+}
+
+.status-copy p:not(.eyebrow) {
+  max-width: 660px;
+  color: var(--muted);
+  font-size: clamp(1.05rem, 2vw, 1.24rem);
+}
+
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.status-mark {
+  display: grid;
+  min-height: 300px;
+  align-content: end;
+  gap: 10px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(143, 51, 214, 0.28), rgba(17, 16, 20, 0.9)),
+    url("assets/yeetlab-logo.png") center 22% / 78% auto no-repeat;
+  box-shadow: var(--shadow);
+}
+
+.status-mark span {
+  color: var(--yellow);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.status-mark strong {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.cancel-status .status-mark {
+  background:
+    linear-gradient(145deg, rgba(124, 133, 128, 0.28), rgba(17, 16, 20, 0.9)),
+    url("assets/yeetlab-logo.png") center 22% / 78% auto no-repeat;
+}
+
 .site-footer {
   display: flex;
   align-items: center;
@@ -519,7 +586,8 @@ legend {
   .hero,
   .specs-section,
   .parts-section,
-  .checkout-section {
+  .checkout-section,
+  .status-section {
     grid-template-columns: 1fr;
   }
 
@@ -571,6 +639,10 @@ legend {
 
   .button {
     width: 100%;
+  }
+
+  .status-section {
+    min-height: auto;
   }
 
   .gallery-thumbs {

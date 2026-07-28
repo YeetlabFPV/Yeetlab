@@ -1,23 +1,68 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Order Successful | Yeetlab</title>
-<style>
-body{font-family:Inter,Arial,sans-serif;background:#111;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
-.card{max-width:640px;background:#1b1b1b;padding:40px;border-radius:16px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-h1{font-size:2.2rem;margin-bottom:.5rem}
-p{color:#cfcfcf;line-height:1.6}
-a{display:inline-block;margin-top:24px;padding:14px 24px;background:#fff;color:#111;text-decoration:none;border-radius:10px;font-weight:700}
-</style>
-</head>
-<body>
-<div class="card">
-<h1>🎉 Thank you!</h1>
-<p>Your payment was successful and your order has been received.</p>
-<p>We'll start manufacturing your Shreddo as soon as possible. Production time is typically around <strong>3 weeks</strong>.</p>
-<a href="./index.html">Back to Yeetlab</a>
-</div>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Your Yeetlab Shreddo 5 order was received successfully."
+    >
+    <title>Order Successful | Yeetlab</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicons/favicon-512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Yeetlab home">
+        <img src="assets/yeetlab-wordmark.png" alt="Yeetlab">
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="./#frame">Frame</a>
+        <a href="./#specs">Specs</a>
+        <a href="./#parts">Parts</a>
+        <a href="./#checkout">Checkout</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="status-section success-status">
+        <div class="status-copy">
+          <p class="eyebrow">Order confirmed</p>
+          <h1>Thank you for sending it.</h1>
+          <p>
+            Your payment was successful and your Shreddo 5 order has been
+            received.
+          </p>
+          <p>
+            We will start manufacturing your frame as soon as possible.
+            Production and shipping time is usually around 3 weeks.
+          </p>
+          <div class="status-actions">
+            <a class="button primary" href="./">Back to Yeetlab</a>
+            <a class="button ghost" href="mailto:tmw@fpv.com">Contact us</a>
+          </div>
+        </div>
+        <div class="status-mark" aria-hidden="true">
+          <span>Paid</span>
+          <strong>Shreddo 5</strong>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>&copy; 2026 Yeetlab</span>
+      <div class="footer-links">
+        <a href="mailto:tmw@fpv.com">tmw@fpv.com</a>
+        <a href="https://www.instagram.com/yeetlab.fpv" rel="noopener">Instagram @yeetlab.fpv</a>
+      </div>
+    </footer>
+  </body>
 </html>
