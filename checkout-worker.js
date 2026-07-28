@@ -1,12 +1,14 @@
 const ALLOWED_ORIGINS = new Set([
+  "https://yeetlabfpv.com",
+  "https://www.yeetlabfpv.com",
   "https://yeetlabfpv.github.io",
   "http://localhost:5500",
   "http://127.0.0.1:5500",
 ]);
 
 const SUCCESS_URL =
-  "https://yeetlabfpv.github.io/Yeetlab/success.html?session_id={CHECKOUT_SESSION_ID}";
-const CANCEL_URL = "https://yeetlabfpv.github.io/Yeetlab/cancel.html";
+  "https://yeetlabfpv.com/success.html?session_id={CHECKOUT_SESSION_ID}";
+const CANCEL_URL = "https://yeetlabfpv.com/cancel.html";
 const STRIPE_CHECKOUT_URL = "https://api.stripe.com/v1/checkout/sessions";
 const SHIPPING_RATE = "shr_1Ty7k00LBr9BqjupCxKHr2hb";
 const MAX_QUANTITY = 20;
