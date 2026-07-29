@@ -13,9 +13,8 @@ const STRIPE_CHECKOUT_URL = "https://api.stripe.com/v1/checkout/sessions";
 const SHIPPING_RATE = "shr_1Ty7k00LBr9BqjupCxKHr2hb";
 const MAX_QUANTITY = 20;
 
-const FRAME_PRICE_ID = "price_1Ty7hM0LBr9BqjupNPzReUbs";
-
-const SPARE_PART_PRICES = {
+const PRICE_IDS = {
+  frame: "price_1Ty7hM0LBr9BqjupNPzReUbs",
   arm: "price_1Ty9M80LBr9BqjupvjVW8ZQp",
   "top-plate": "price_1Ty9NL0LBr9BqjupZtJJCXcc",
   "bottom-plate": "price_1Ty9O60LBr9BqjupBVZqMtri",
@@ -74,14 +73,14 @@ function validateItems(items) {
     throw new Error("Expected items to be an array.");
   }
 
-  return items.map((item) => {
+  const validatedItems = items.map((item) => {
     if (!item || typeof item !== "object") {
       throw new Error("Invalid item.");
     }
 
     const { key, quantity } = item;
 
-    if (!Object.hasOwn(SPARE_PART_PRICES, key)) {
+    if (!Object.hasOwn(PRICE_IDS, key)) {
       throw new Error(`Unknown product key: ${String(key)}`);
     }
 
@@ -91,6 +90,14 @@ function validateItems(items) {
 
     return { key, quantity };
   });
+
+  const selectedItems = validatedItems.filter((item) => item.quantity > 0);
+
+  if (selectedItems.length === 0) {
+    throw new Error("Select at least one item.");
+  }
+
+  return selectedItems;
 }
 
 async function createCheckoutSession(request, env, origin) {
@@ -112,16 +119,10 @@ async function createCheckoutSession(request, env, origin) {
     return jsonResponse({ error: "Checkout is not configured." }, 500, origin);
   }
 
-  const lineItems = [{ price: FRAME_PRICE_ID, quantity: 1 }];
-
-  for (const item of items) {
-    if (item.quantity > 0) {
-      lineItems.push({
-        price: SPARE_PART_PRICES[item.key],
-        quantity: item.quantity,
-      });
-    }
-  }
+  const lineItems = items.map((item) => ({
+    price: PRICE_IDS[item.key],
+    quantity: item.quantity,
+  }));
 
   const body = new URLSearchParams({
     mode: "payment",

@@ -1,17 +1,16 @@
-const BASE_FRAME_PRICE = 80;
 const SHIPPING_PRICE = 10;
 const CHECKOUT_ENDPOINT = "https://yeetlab-checkout.tmw-fpv.workers.dev/checkout";
 
 const form = document.querySelector("#order-form");
 const totalElement = document.querySelector("#order-total");
 const checkoutButton = document.querySelector("#checkout-button");
-const addonInputs = [...document.querySelectorAll('input[name="addon"]')];
+const itemInputs = [...document.querySelectorAll('input[name="item"]')];
 const galleryMain = document.querySelector("#gallery-main");
 const galleryButtons = [...document.querySelectorAll("[data-gallery-src]")];
 let checkoutInProgress = false;
 
-function selectedAddons() {
-  return addonInputs
+function selectedItems() {
+  return itemInputs
     .map((input) => ({
       key: input.dataset.key,
       price: Number(input.dataset.price || 0),
@@ -31,26 +30,40 @@ function normalizedQuantity(value) {
 }
 
 function orderTotal() {
-  return selectedAddons().reduce((sum, addon) => {
-    return sum + addon.price * addon.quantity;
-  }, BASE_FRAME_PRICE + SHIPPING_PRICE);
+  const items = selectedItems();
+
+  if (items.length === 0) {
+    return 0;
+  }
+
+  return items.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, SHIPPING_PRICE);
 }
 
 function updateTotal() {
-  addonInputs.forEach((input) => {
+  const hasItems = selectedItems().length > 0;
+
+  itemInputs.forEach((input) => {
     const quantity = normalizedQuantity(input.value);
     if (input.value !== String(quantity)) {
       input.value = String(quantity);
     }
     input.closest(".addon")?.classList.toggle("has-quantity", quantity > 0);
+    input.closest(".order-line")?.classList.toggle("has-quantity", quantity > 0);
   });
+
   totalElement.textContent = `CHF ${orderTotal()}`;
+
   if (!checkoutInProgress) {
-    checkoutButton.textContent = `Pay estimated CHF ${orderTotal()} with Stripe`;
+    checkoutButton.disabled = !hasItems;
+    checkoutButton.textContent = hasItems
+      ? `Pay estimated CHF ${orderTotal()} with Stripe`
+      : "Select at least one item";
   }
 }
 
-addonInputs.forEach((input) => {
+itemInputs.forEach((input) => {
   input.addEventListener("input", updateTotal);
   input.addEventListener("change", updateTotal);
 });
@@ -82,7 +95,7 @@ form?.addEventListener("submit", async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        items: selectedAddons().map(({ key, quantity }) => ({ key, quantity })),
+        items: selectedItems().map(({ key, quantity }) => ({ key, quantity })),
       }),
     });
 

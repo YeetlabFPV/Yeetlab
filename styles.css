@@ -463,6 +463,10 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
+.order-line.has-quantity {
+  border-color: rgba(177, 77, 255, 0.55);
+}
+
 .order-line div,
 .addon span {
   display: grid;
@@ -499,6 +503,7 @@ legend {
   background: rgba(143, 51, 214, 0.18);
 }
 
+.order-line input,
 .addon input {
   width: 76px;
   min-height: 42px;
