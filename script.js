@@ -2,6 +2,8 @@ const SHIPPING_PRICE = 10;
 const CHECKOUT_ENDPOINT = "https://yeetlab-checkout.tmw-fpv.workers.dev/checkout";
 
 const form = document.querySelector("#order-form");
+const subtotalElement = document.querySelector("#order-subtotal");
+const shippingElement = document.querySelector("#order-shipping");
 const totalElement = document.querySelector("#order-total");
 const checkoutButton = document.querySelector("#checkout-button");
 const itemInputs = [...document.querySelectorAll('input[name="item"]')];
@@ -65,15 +67,23 @@ function normalizedQuantity(value) {
 }
 
 function orderTotal() {
+  return orderSubtotal() + shippingTotal();
+}
+
+function orderSubtotal() {
+  return selectedItems().reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
+}
+
+function shippingTotal() {
   const items = selectedItems();
 
   if (items.length === 0) {
     return 0;
   }
 
-  return items.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, SHIPPING_PRICE * shippingQuantity(items));
+  return SHIPPING_PRICE * shippingQuantity(items);
 }
 
 function updateTotal() {
@@ -88,6 +98,8 @@ function updateTotal() {
     input.closest(".order-line")?.classList.toggle("has-quantity", quantity > 0);
   });
 
+  subtotalElement.textContent = `CHF ${orderSubtotal()}`;
+  shippingElement.textContent = `CHF ${shippingTotal()}`;
   totalElement.textContent = `CHF ${orderTotal()}`;
 
   if (!checkoutInProgress) {
