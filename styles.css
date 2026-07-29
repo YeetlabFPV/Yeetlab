@@ -389,9 +389,33 @@ h3 {
 
 .parts-section {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.55fr);
+  grid-template-columns: minmax(0, 0.92fr) minmax(280px, 0.72fr);
   gap: clamp(24px, 5vw, 64px);
-  align-items: end;
+  align-items: center;
+}
+
+.parts-visual {
+  overflow: hidden;
+  padding: clamp(16px, 3vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 70% 18%, rgba(143, 51, 214, 0.24), transparent 34%),
+    rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow);
+}
+
+.parts-visual img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  filter: drop-shadow(0 24px 34px rgba(143, 51, 214, 0.2));
+}
+
+.parts-content {
+  display: grid;
+  gap: 18px;
 }
 
 .text-link {
