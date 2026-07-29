@@ -10,16 +10,16 @@ const SUCCESS_URL =
   "https://yeetlabfpv.com/success.html?session_id={CHECKOUT_SESSION_ID}";
 const CANCEL_URL = "https://yeetlabfpv.com/cancel.html";
 const STRIPE_CHECKOUT_URL = "https://api.stripe.com/v1/checkout/sessions";
-const SHIPPING_RATE = "shr_1Ty7k00LBr9BqjupCxKHr2hb";
+const SHIPPING_RATE = "shr_1TyTKu05GriUFGJ3IZRsvLff";
 const MAX_QUANTITY = 20;
 
 const PRICE_IDS = {
-  frame: "price_1Ty7hM0LBr9BqjupNPzReUbs",
-  arm: "price_1Ty9M80LBr9BqjupvjVW8ZQp",
-  "top-plate": "price_1Ty9NL0LBr9BqjupZtJJCXcc",
-  "bottom-plate": "price_1Ty9O60LBr9BqjupBVZqMtri",
-  "base-mid-plate": "price_1Ty9RB0LBr9BqjupvIYkK5zr",
-  "arm-locking-plate": "price_1Ty9SD0LBr9Bqjupt30sIvY5",
+  frame: "price_1TySsq05GriUFGJ3SuNq5LQp",
+  arm: "price_1TySsp05GriUFGJ3wjdhSliC",
+  "top-plate": "price_1TySsq05GriUFGJ3mJFoKxye",
+  "bottom-plate": "price_1TySsq05GriUFGJ3sgfAakQC",
+  "base-mid-plate": "price_1TySsr05GriUFGJ3xw6E745w",
+  "arm-locking-plate": "price_1TySsq05GriUFGJ3xFGSxQuT",
 };
 
 const DELIVERY_COUNTRIES = [
