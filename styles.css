@@ -563,21 +563,39 @@ legend {
   margin-top: 34px;
 }
 
-.status-mark {
-  display: grid;
-  min-height: 300px;
-  align-content: end;
-  gap: 10px;
-  padding: 26px;
+.status-card {
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background:
-    linear-gradient(145deg, rgba(143, 51, 214, 0.28), rgba(17, 16, 20, 0.9)),
-    url("assets/yeetlab-logo.png") center 22% / 78% auto no-repeat;
+  background: rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
 }
 
-.status-mark span {
+.status-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.15;
+  object-fit: cover;
+  background: #000;
+}
+
+.cancel-status .status-card img {
+  padding: 42px;
+  object-fit: contain;
+}
+
+.status-card div {
+  display: grid;
+  gap: 8px;
+  padding: 22px 24px 24px;
+  background: linear-gradient(145deg, rgba(143, 51, 214, 0.28), rgba(17, 16, 20, 0.94));
+}
+
+.cancel-status .status-card div {
+  background: linear-gradient(145deg, rgba(124, 133, 128, 0.25), rgba(17, 16, 20, 0.94));
+}
+
+.status-card span {
   color: var(--yellow);
   font-size: 0.78rem;
   font-weight: 900;
@@ -585,17 +603,11 @@ legend {
   text-transform: uppercase;
 }
 
-.status-mark strong {
-  font-size: clamp(2rem, 4vw, 3.4rem);
+.status-card strong {
+  font-size: clamp(1.8rem, 3vw, 2.45rem);
   font-weight: 900;
-  line-height: 0.92;
+  line-height: 0.95;
   text-transform: uppercase;
-}
-
-.cancel-status .status-mark {
-  background:
-    linear-gradient(145deg, rgba(124, 133, 128, 0.28), rgba(17, 16, 20, 0.9)),
-    url("assets/yeetlab-logo.png") center 22% / 78% auto no-repeat;
 }
 
 .site-footer {
