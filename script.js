@@ -19,6 +19,33 @@ function selectedItems() {
     .filter((addon) => addon.quantity > 0);
 }
 
+function selectedQuantity(key) {
+  return normalizedQuantity(
+    itemInputs.find((input) => input.dataset.key === key)?.value || 0,
+  );
+}
+
+function legacyAddonPayload() {
+  return selectedItems()
+    .filter((item) => item.key !== "frame")
+    .map(({ key, quantity }) => ({ key, quantity }));
+}
+
+function checkoutPayloadItems() {
+  const frameInput = itemInputs.find((input) => input.dataset.key === "frame");
+  const frameItem = {
+    key: "frame",
+    quantity: normalizedQuantity(frameInput?.value || 0),
+  };
+
+  return [
+    frameItem,
+    ...selectedItems()
+      .filter((item) => item.key !== "frame")
+      .map(({ key, quantity }) => ({ key, quantity })),
+  ];
+}
+
 function normalizedQuantity(value) {
   const quantity = Number.parseInt(value, 10);
 
@@ -89,19 +116,46 @@ form?.addEventListener("submit", async (event) => {
   checkoutButton.textContent = "Opening Stripe...";
 
   try {
-    const response = await fetch(CHECKOUT_ENDPOINT, {
+    const items = checkoutPayloadItems();
+    let response = await fetch(CHECKOUT_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        items: selectedItems().map(({ key, quantity }) => ({ key, quantity })),
+        items,
       }),
     });
 
-    const data = await response.json().catch(() => ({}));
+    let data = await response.json().catch(() => ({}));
+
+    if (
+      !response.ok &&
+      data.error?.includes("Unknown product key: frame") &&
+      selectedQuantity("frame") === 1
+    ) {
+      response = await fetch(CHECKOUT_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: legacyAddonPayload(),
+        }),
+      });
+      data = await response.json().catch(() => ({}));
+    }
 
     if (!response.ok || !data.url) {
+      if (
+        data.error?.includes("Unknown product key: frame") &&
+        selectedQuantity("frame") === 0
+      ) {
+        throw new Error(
+          "Spare-only checkout is ready on the website, but the checkout worker still needs to be updated.",
+        );
+      }
+
       throw new Error(data.error || "Checkout could not be started. Please try again.");
     }
 
