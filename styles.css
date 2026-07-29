@@ -473,7 +473,19 @@ h3 {
 .order-line div,
 .addon span {
   display: grid;
+  flex: 1;
   gap: 2px;
+  min-width: 0;
+}
+
+.checkout-thumb {
+  width: 72px;
+  height: 52px;
+  flex: 0 0 72px;
+  object-fit: contain;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(4, 4, 6, 0.5);
 }
 
 fieldset {
