@@ -10,7 +10,8 @@ const SUCCESS_URL =
   "https://yeetlabfpv.com/success.html?session_id={CHECKOUT_SESSION_ID}";
 const CANCEL_URL = "https://yeetlabfpv.com/cancel.html";
 const STRIPE_CHECKOUT_URL = "https://api.stripe.com/v1/checkout/sessions";
-const SHIPPING_RATE = "shr_1TyTKu05GriUFGJ3IZRsvLff";
+const SHIPPING_PRICE_CHF = 10;
+const CHF_TO_RAPPEN = 100;
 const MAX_QUANTITY = 20;
 
 const PRICE_IDS = {
@@ -100,6 +101,11 @@ function validateItems(items) {
   return selectedItems;
 }
 
+function shippingQuantity(items) {
+  const frameQuantity = items.find((item) => item.key === "frame")?.quantity || 0;
+  return Math.max(1, frameQuantity);
+}
+
 async function createCheckoutSession(request, env, origin) {
   let payload;
   try {
@@ -123,12 +129,20 @@ async function createCheckoutSession(request, env, origin) {
     price: PRICE_IDS[item.key],
     quantity: item.quantity,
   }));
+  const shippingUnits = shippingQuantity(items);
+  const shippingAmount = shippingUnits * SHIPPING_PRICE_CHF * CHF_TO_RAPPEN;
 
   const body = new URLSearchParams({
     mode: "payment",
     success_url: SUCCESS_URL,
     cancel_url: CANCEL_URL,
-    "shipping_options[0][shipping_rate]": SHIPPING_RATE,
+    "shipping_options[0][shipping_rate_data][type]": "fixed_amount",
+    "shipping_options[0][shipping_rate_data][fixed_amount][amount]": String(shippingAmount),
+    "shipping_options[0][shipping_rate_data][fixed_amount][currency]": "chf",
+    "shipping_options[0][shipping_rate_data][display_name]":
+      shippingUnits > 1
+        ? `Worldwide shipping (${shippingUnits} frame kits)`
+        : "Worldwide shipping",
     "shipping_address_collection[allowed_countries][0]": DELIVERY_COUNTRIES[0],
     allow_promotion_codes: "true",
   });

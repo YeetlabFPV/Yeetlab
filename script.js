@@ -46,6 +46,14 @@ function checkoutPayloadItems() {
   ];
 }
 
+function shippingQuantity(items) {
+  if (items.length === 0) {
+    return 0;
+  }
+
+  return Math.max(1, selectedQuantity("frame"));
+}
+
 function normalizedQuantity(value) {
   const quantity = Number.parseInt(value, 10);
 
@@ -65,7 +73,7 @@ function orderTotal() {
 
   return items.reduce((sum, item) => {
     return sum + item.price * item.quantity;
-  }, SHIPPING_PRICE);
+  }, SHIPPING_PRICE * shippingQuantity(items));
 }
 
 function updateTotal() {
