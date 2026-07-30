@@ -722,6 +722,52 @@ legend {
   text-transform: uppercase;
 }
 
+.legal-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: clamp(58px, 8vw, 104px) clamp(18px, 5vw, 64px);
+}
+
+.legal-page h1 {
+  font-size: clamp(2.6rem, 6vw, 5.8rem);
+}
+
+.legal-intro {
+  max-width: 760px;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: clamp(1.05rem, 2vw, 1.22rem);
+}
+
+.legal-content {
+  display: grid;
+  gap: 18px;
+  margin-top: 42px;
+}
+
+.legal-content section {
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 16, 20, 0.88);
+}
+
+.legal-content h2 {
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+}
+
+.legal-content p {
+  margin: 14px 0 0;
+  color: var(--muted);
+}
+
+.legal-content a {
+  color: var(--yellow);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .site-footer {
   display: flex;
   align-items: center;
