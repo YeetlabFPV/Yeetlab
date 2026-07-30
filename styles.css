@@ -66,7 +66,7 @@ a {
 }
 
 .brand img {
-  width: clamp(138px, 18vw, 220px);
+  width: clamp(118px, 16vw, 190px);
 }
 
 .nav {
@@ -768,16 +768,30 @@ legend {
 }
 
 @media (max-width: 620px) {
-  .site-header,
+  .site-header {
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px clamp(18px, 5vw, 48px) 13px;
+    background: rgba(5, 5, 5, 0.96);
+    backdrop-filter: blur(10px);
+  }
+
   .site-footer {
     align-items: flex-start;
     flex-direction: column;
   }
 
+  .brand img {
+    width: 150px;
+  }
+
   .nav {
     width: 100%;
     justify-content: space-between;
-    font-size: 0.82rem;
+    gap: 12px;
+    padding-top: 2px;
+    font-size: 0.84rem;
   }
 
   .hero-media {
