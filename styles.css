@@ -120,7 +120,7 @@ p {
 h1 {
   max-width: 840px;
   margin: 0;
-  font-size: clamp(2.85rem, 7.6vw, 7.4rem);
+  font-size: clamp(2.55rem, 5.8vw, 6rem);
   font-weight: 900;
   letter-spacing: 0;
   line-height: 0.9;
@@ -144,6 +144,7 @@ h3 {
 .hero-copy p:not(.eyebrow),
 .section-heading p,
 .spec-grid p,
+.note-grid p,
 .parts-copy p,
 .checkout-copy p,
 .order-line span,
@@ -228,6 +229,7 @@ h3 {
 
 .product-band,
 .specs-section,
+.box-section,
 .parts-section,
 .checkout-section {
   padding: clamp(58px, 8vw, 104px) clamp(18px, 5vw, 64px);
@@ -368,6 +370,60 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
+.box-section {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(26px, 5vw, 64px);
+  align-items: center;
+  max-width: 1220px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--line);
+}
+
+.box-media {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.box-media img {
+  width: 100%;
+  aspect-ratio: 1.35;
+  object-fit: cover;
+}
+
+.box-content {
+  display: grid;
+  gap: 24px;
+}
+
+.box-lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.box-lists div {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 16, 20, 0.88);
+}
+
+.box-lists ul {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.box-lists li::marker {
+  color: var(--yellow);
+}
+
 .video-embed {
   position: relative;
   margin-top: 34px;
@@ -425,6 +481,35 @@ h3 {
   font-weight: 900;
   text-decoration: underline;
   text-underline-offset: 5px;
+}
+
+.order-notes-section {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: clamp(58px, 8vw, 104px) clamp(18px, 5vw, 64px);
+  border-bottom: 1px solid var(--line);
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 34px;
+}
+
+.note-grid article {
+  min-height: 250px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 16, 20, 0.88);
+}
+
+.note-grid span {
+  display: inline-block;
+  margin-bottom: 26px;
+  color: var(--yellow);
+  font-weight: 900;
 }
 
 .checkout-section {
@@ -768,6 +853,131 @@ legend {
   text-underline-offset: 4px;
 }
 
+.guide-page {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: clamp(58px, 8vw, 104px) clamp(18px, 5vw, 64px);
+}
+
+.guide-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: end;
+  padding-bottom: clamp(42px, 6vw, 72px);
+  border-bottom: 1px solid var(--line);
+}
+
+.guide-hero h1 {
+  font-size: clamp(2.55rem, 5.8vw, 6rem);
+}
+
+.guide-hero p:not(.eyebrow) {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: clamp(1.05rem, 2vw, 1.22rem);
+}
+
+.guide-callout {
+  display: grid;
+  gap: 8px;
+  padding: 22px;
+  border: 1px solid rgba(255, 194, 14, 0.38);
+  border-radius: 8px;
+  background: rgba(255, 194, 14, 0.08);
+}
+
+.guide-callout span {
+  color: var(--yellow);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.guide-callout strong {
+  font-size: 1.22rem;
+  line-height: 1.15;
+}
+
+.guide-section {
+  padding: clamp(46px, 7vw, 82px) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.hardware-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.hardware-grid div {
+  display: grid;
+  gap: 10px;
+  min-height: 140px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 16, 20, 0.88);
+}
+
+.hardware-grid span {
+  color: var(--yellow);
+  font-size: 1.45rem;
+  font-weight: 900;
+}
+
+.hardware-grid strong {
+  align-self: end;
+  line-height: 1.15;
+}
+
+.guide-steps {
+  display: grid;
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.build-step {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 0.58fr);
+  gap: clamp(18px, 4vw, 42px);
+  align-items: center;
+  padding: clamp(18px, 3vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 16, 20, 0.88);
+}
+
+.step-copy span {
+  display: inline-block;
+  margin-bottom: 22px;
+  color: var(--yellow);
+  font-weight: 900;
+}
+
+.step-copy p,
+.guide-warning p {
+  color: var(--muted);
+}
+
+.build-step img {
+  width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f7;
+}
+
+.guide-warning {
+  display: grid;
+  justify-items: start;
+  max-width: 760px;
+  border-bottom: 0;
+}
+
 .site-footer {
   display: flex;
   align-items: center;
@@ -786,9 +996,12 @@ legend {
 @media (max-width: 900px) {
   .hero,
   .specs-section,
+  .box-section,
   .parts-section,
   .checkout-section,
-  .status-section {
+  .status-section,
+  .guide-hero,
+  .build-step {
     grid-template-columns: 1fr;
   }
 
@@ -810,6 +1023,11 @@ legend {
 
   .spec-list {
     grid-template-columns: 1fr;
+  }
+
+  .note-grid,
+  .hardware-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -835,9 +1053,9 @@ legend {
   .nav {
     width: 100%;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
     padding-top: 2px;
-    font-size: 0.84rem;
+    font-size: 0.78rem;
   }
 
   .hero-media {
@@ -849,6 +1067,15 @@ legend {
   }
 
   .spec-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .box-lists {
+    grid-template-columns: 1fr;
+  }
+
+  .note-grid,
+  .hardware-grid {
     grid-template-columns: 1fr;
   }
 
