@@ -136,6 +136,7 @@ async function createCheckoutSession(request, env, origin) {
     mode: "payment",
     success_url: SUCCESS_URL,
     cancel_url: CANCEL_URL,
+    "phone_number_collection[enabled]": "true",
     "shipping_options[0][shipping_rate_data][type]": "fixed_amount",
     "shipping_options[0][shipping_rate_data][fixed_amount][amount]": String(shippingAmount),
     "shipping_options[0][shipping_rate_data][fixed_amount][currency]": "chf",
