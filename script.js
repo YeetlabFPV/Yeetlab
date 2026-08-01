@@ -156,6 +156,17 @@ function moveCommunityLightbox(direction) {
   openCommunityLightbox(nextIndex);
 }
 
+function shuffledImages(images) {
+  const shuffled = [...images];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+
+  return shuffled;
+}
+
 document.addEventListener("click", (event) => {
   if (event.target.closest("#community-load")) {
     communitySection?.classList.add("is-expanded");
@@ -172,7 +183,7 @@ async function loadCommunityGallery() {
   }
 
   try {
-    const response = await fetch("assets/community/gallery.json?v=20260801-gallery-19b", {
+    const response = await fetch("assets/community/gallery.json?v=20260801-gallery-25", {
       cache: "no-store",
     });
 
@@ -180,7 +191,7 @@ async function loadCommunityGallery() {
       throw new Error("Community gallery could not be loaded.");
     }
 
-    const images = await response.json();
+    const images = shuffledImages(await response.json());
 
     communityGrid.innerHTML = "";
     images.forEach((image, index) => {
