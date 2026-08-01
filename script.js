@@ -172,7 +172,7 @@ async function loadCommunityGallery() {
   }
 
   try {
-    const response = await fetch("assets/community/gallery.json?v=20260801-gallery-17", {
+    const response = await fetch("assets/community/gallery.json?v=20260801-gallery-19", {
       cache: "no-store",
     });
 
