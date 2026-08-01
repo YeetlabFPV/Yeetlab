@@ -7,3 +7,6 @@ node_modules/
 .wrangler-cache/
 .wrangler-home/
 .wrangler-config/
+assets/community/*
+!assets/community/web/
+!assets/community/web/*.jpg

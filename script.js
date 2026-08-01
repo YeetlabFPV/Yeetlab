@@ -9,7 +9,15 @@ const checkoutButton = document.querySelector("#checkout-button");
 const itemInputs = [...document.querySelectorAll('input[name="item"]')];
 const galleryMain = document.querySelector("#gallery-main");
 const galleryButtons = [...document.querySelectorAll("[data-gallery-src]")];
+const communitySection = document.querySelector(".community-section");
+const communityTiles = [...document.querySelectorAll("[data-community-src]")];
+const communityLightbox = document.querySelector("#community-lightbox");
+const communityLightboxImage = document.querySelector("#community-lightbox-image");
+const communityCloseButton = document.querySelector("#community-close");
+const communityPrevButton = document.querySelector("#community-prev");
+const communityNextButton = document.querySelector("#community-next");
 let checkoutInProgress = false;
+let activeCommunityIndex = 0;
 
 function selectedItems() {
   return itemInputs
@@ -122,6 +130,59 @@ galleryButtons.forEach((button) => {
     galleryMain.src = button.dataset.gallerySrc;
     galleryMain.alt = button.dataset.galleryAlt;
   });
+});
+
+function openCommunityLightbox(index) {
+  activeCommunityIndex = index;
+  communityLightboxImage.src = communityTiles[index].dataset.communitySrc;
+  communityLightbox.classList.add("is-open");
+  communityLightbox.setAttribute("aria-hidden", "false");
+}
+
+function closeCommunityLightbox() {
+  communityLightbox.classList.remove("is-open");
+  communityLightbox.setAttribute("aria-hidden", "true");
+}
+
+function moveCommunityLightbox(direction) {
+  const nextIndex =
+    (activeCommunityIndex + direction + communityTiles.length) %
+    communityTiles.length;
+  openCommunityLightbox(nextIndex);
+}
+
+document.addEventListener("click", (event) => {
+  if (event.target.closest("#community-load")) {
+    communitySection?.classList.add("is-expanded");
+  }
+});
+
+communityTiles.forEach((button, index) => {
+  button.addEventListener("click", () => openCommunityLightbox(index));
+});
+
+communityCloseButton?.addEventListener("click", closeCommunityLightbox);
+communityPrevButton?.addEventListener("click", () => moveCommunityLightbox(-1));
+communityNextButton?.addEventListener("click", () => moveCommunityLightbox(1));
+
+communityLightbox?.addEventListener("click", (event) => {
+  if (event.target === communityLightbox) {
+    closeCommunityLightbox();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (!communityLightbox?.classList.contains("is-open")) {
+    return;
+  }
+
+  if (event.key === "Escape") {
+    closeCommunityLightbox();
+  } else if (event.key === "ArrowLeft") {
+    moveCommunityLightbox(-1);
+  } else if (event.key === "ArrowRight") {
+    moveCommunityLightbox(1);
+  }
 });
 
 form?.addEventListener("submit", async (event) => {

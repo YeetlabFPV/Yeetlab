@@ -229,6 +229,7 @@ h3 {
 
 .product-band,
 .specs-section,
+.community-section,
 .box-section,
 .parts-section,
 .checkout-section {
@@ -290,6 +291,122 @@ h3 {
   height: 100%;
   aspect-ratio: 1.75;
   object-fit: cover;
+}
+
+.community-section {
+  max-width: 1220px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.community-grid {
+  column-count: 5;
+  column-gap: 14px;
+  margin-top: 34px;
+}
+
+.community-tile {
+  display: block;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  break-inside: avoid;
+  cursor: pointer;
+}
+
+.community-tile:hover {
+  border-color: var(--purple-hot);
+}
+
+.community-tile img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform 180ms ease;
+}
+
+.community-tile:hover img {
+  transform: scale(1.04);
+}
+
+.community-tile.is-extra {
+  display: none;
+}
+
+.community-section.is-expanded .community-tile.is-extra {
+  display: block;
+}
+
+.community-load {
+  display: flex;
+  width: fit-content;
+  margin: 18px auto 0;
+}
+
+.community-section.is-expanded .community-load {
+  display: none;
+}
+
+.community-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(18px, 4vw, 48px);
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.community-lightbox.is-open {
+  display: flex;
+}
+
+.community-lightbox img {
+  max-width: min(100%, 1180px);
+  max-height: 86vh;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #050505;
+}
+
+.lightbox-close,
+.lightbox-arrow {
+  position: absolute;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 16, 20, 0.9);
+  color: var(--ink);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.lightbox-close {
+  top: 18px;
+  right: 18px;
+  padding: 10px 14px;
+}
+
+.lightbox-arrow {
+  top: 50%;
+  width: 46px;
+  height: 58px;
+  font-size: 2.5rem;
+  transform: translateY(-50%);
+}
+
+.lightbox-prev {
+  left: 18px;
+}
+
+.lightbox-next {
+  right: 18px;
 }
 
 .specs-section {
@@ -1029,6 +1146,10 @@ legend {
   .hardware-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .community-grid {
+    column-count: 3;
+  }
 }
 
 @media (max-width: 620px) {
@@ -1077,6 +1198,33 @@ legend {
   .note-grid,
   .hardware-grid {
     grid-template-columns: 1fr;
+  }
+
+  .community-grid {
+    column-count: 2;
+    column-gap: 10px;
+  }
+
+  .community-tile {
+    margin-bottom: 10px;
+  }
+
+  .community-lightbox {
+    padding: 58px 14px 82px;
+  }
+
+  .lightbox-close {
+    top: 12px;
+    right: 12px;
+  }
+
+  .lightbox-arrow {
+    top: auto;
+    bottom: 14px;
+    width: 44px;
+    height: 48px;
+    font-size: 2rem;
+    transform: none;
   }
 
   .button {
