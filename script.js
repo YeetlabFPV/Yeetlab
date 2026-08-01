@@ -10,7 +10,8 @@ const itemInputs = [...document.querySelectorAll('input[name="item"]')];
 const galleryMain = document.querySelector("#gallery-main");
 const galleryButtons = [...document.querySelectorAll("[data-gallery-src]")];
 const communitySection = document.querySelector(".community-section");
-const communityTiles = [...document.querySelectorAll("[data-community-src]")];
+const communityGrid = document.querySelector("#community-grid");
+let communityTiles = [];
 const communityLightbox = document.querySelector("#community-lightbox");
 const communityLightboxImage = document.querySelector("#community-lightbox-image");
 const communityCloseButton = document.querySelector("#community-close");
@@ -133,6 +134,10 @@ galleryButtons.forEach((button) => {
 });
 
 function openCommunityLightbox(index) {
+  if (!communityTiles[index]) {
+    return;
+  }
+
   activeCommunityIndex = index;
   communityLightboxImage.src = communityTiles[index].dataset.communitySrc;
   communityLightbox.classList.add("is-open");
@@ -161,6 +166,46 @@ communityTiles.forEach((button, index) => {
   button.addEventListener("click", () => openCommunityLightbox(index));
 });
 
+async function loadCommunityGallery() {
+  if (!communityGrid) {
+    return;
+  }
+
+  try {
+    const response = await fetch("assets/community/gallery.json?v=20260801-gallery-17", {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error("Community gallery could not be loaded.");
+    }
+
+    const images = await response.json();
+
+    communityGrid.innerHTML = "";
+    images.forEach((image, index) => {
+      const button = document.createElement("button");
+      button.className = `community-tile${index >= 8 ? " is-extra" : ""}`;
+      button.type = "button";
+      button.dataset.communityIndex = String(index);
+      button.dataset.communitySrc = image.src;
+
+      const img = document.createElement("img");
+      img.src = image.thumb;
+      img.alt = image.alt || "Community Shreddo 5 build";
+      img.loading = "lazy";
+
+      button.append(img);
+      button.addEventListener("click", () => openCommunityLightbox(index));
+      communityGrid.append(button);
+    });
+
+    communityTiles = [...communityGrid.querySelectorAll("[data-community-src]")];
+  } catch (error) {
+    communitySection?.classList.add("is-unavailable");
+  }
+}
+
 communityCloseButton?.addEventListener("click", closeCommunityLightbox);
 communityPrevButton?.addEventListener("click", () => moveCommunityLightbox(-1));
 communityNextButton?.addEventListener("click", () => moveCommunityLightbox(1));
@@ -184,6 +229,8 @@ document.addEventListener("keydown", (event) => {
     moveCommunityLightbox(1);
   }
 });
+
+loadCommunityGallery();
 
 form?.addEventListener("submit", async (event) => {
   event.preventDefault();

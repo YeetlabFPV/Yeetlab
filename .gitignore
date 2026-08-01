@@ -8,5 +8,6 @@ node_modules/
 .wrangler-home/
 .wrangler-config/
 assets/community/*
+!assets/community/gallery.json
 !assets/community/web/
 !assets/community/web/*.jpg
