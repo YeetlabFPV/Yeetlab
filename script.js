@@ -144,6 +144,16 @@ function openCommunityLightbox(index) {
   communityLightbox.setAttribute("aria-hidden", "false");
 }
 
+function openCommunityTile(button) {
+  const tileIndex = communityTiles.indexOf(button);
+
+  if (tileIndex === -1) {
+    return;
+  }
+
+  openCommunityLightbox(tileIndex);
+}
+
 function closeCommunityLightbox() {
   communityLightbox.classList.remove("is-open");
   communityLightbox.setAttribute("aria-hidden", "true");
@@ -183,7 +193,7 @@ async function loadCommunityGallery() {
   }
 
   try {
-    const response = await fetch("assets/community/gallery.json?v=20260801-gallery-23", {
+    const response = await fetch("assets/community/gallery.json?v=20260801-gallery-hash-23", {
       cache: "no-store",
     });
 
@@ -207,7 +217,7 @@ async function loadCommunityGallery() {
       img.loading = "lazy";
 
       button.append(img);
-      button.addEventListener("click", () => openCommunityLightbox(index));
+      button.addEventListener("click", () => openCommunityTile(button));
       communityGrid.append(button);
     });
 
