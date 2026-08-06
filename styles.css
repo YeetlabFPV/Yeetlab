@@ -600,6 +600,72 @@ h3 {
   text-underline-offset: 5px;
 }
 
+.download-credit-line {
+  color: var(--muted);
+}
+
+.download-credit {
+  position: relative;
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: baseline;
+}
+
+.download-credit summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: color-mix(in srgb, var(--muted) 78%, transparent);
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  list-style: none;
+  transition: color 160ms ease;
+}
+
+.download-credit summary::-webkit-details-marker {
+  display: none;
+}
+
+.download-credit summary:hover,
+.download-credit summary:focus-visible,
+.download-credit[open] summary {
+  color: var(--yellow);
+}
+
+.download-credit-panel {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(58ch, calc(100vw - 36px));
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--panel-strong) 94%, transparent);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+}
+
+.parts-copy .download-credit-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.download-credit-panel a {
+  color: var(--yellow);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.download-credit-panel a:hover,
+.download-credit-panel a:focus-visible {
+  color: var(--purple-hot);
+}
+
 .order-notes-section {
   max-width: 1220px;
   margin: 0 auto;

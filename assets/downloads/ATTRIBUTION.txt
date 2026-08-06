@@ -1,0 +1,19 @@
+THIRD-PARTY ATTRIBUTION
+=======================
+
+Double Horn remix
+-----------------
+
+Based on "Kayoudur / Kayouflip Double Horn LiPo Guard" by Grimka.
+
+Original model:
+https://www.printables.com/model/1344429-kayoudur-kayouflip-double-horn-lipo-guard
+
+Original model license: Creative Commons Attribution 4.0 International
+(CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+
+Changes made by Yeetlab:
+The base plate was adjusted to fit the Shreddo frame.
+
+No endorsement by the original creator is implied.
