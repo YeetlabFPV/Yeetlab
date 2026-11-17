@@ -193,7 +193,7 @@ async function loadCommunityGallery() {
   }
 
   try {
-    const response = await fetch("assets/community/gallery.json?v=20260802-gallery-masonry-24", {
+    const response = await fetch("assets/community/gallery.json?v=20261117-gallery-masonry-29", {
       cache: "no-store",
     });
 
