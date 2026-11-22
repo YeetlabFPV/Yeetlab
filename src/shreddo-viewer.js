@@ -482,6 +482,17 @@ export async function createStudioViewer(viewport) {
       }
     });
 
+    if (isMotor) {
+      const rotor = new Group();
+      rotor.name = 'motor-rotor';
+      for (const component of [...part.children]) {
+        if (/^(Motorglocke|Gehäusekante|Deckelspeiche|Nabe|Welle)/.test(component.name)) {
+          rotor.add(component);
+        }
+      }
+      part.add(rotor);
+    }
+
     const assembly = new Group();
     assembly.name = id;
     assembly.visible = false;
@@ -512,32 +523,39 @@ export async function createStudioViewer(viewport) {
   controls.update();
   controls.saveState();
   const draw = () => renderer.render(scene, camera);
-  let propFrame = 0;
-  function setPropSpin(enabled) {
-    cancelAnimationFrame(propFrame);
-    propFrame = 0;
-    const props = flightHardware.get('props');
-    const spinning = enabled && Boolean(props?.visible);
-    propBlur.visible = spinning;
-    if (propMaterial) propMaterial.opacity = spinning ? .22 : .78;
-    if (!spinning) {
-      draw();
-      return;
+  let spinFrame = 0;
+  let motorAngle = 0;
+
+  function syncPropSpin() {
+    propBlur.visible = Boolean(spinFrame && flightHardware.get('props')?.visible);
+    if (propMaterial) propMaterial.opacity = propBlur.visible ? .22 : .78;
+  }
+
+  function setMotorSpin(enabled) {
+    cancelAnimationFrame(spinFrame);
+    spinFrame = 0;
+    const motors = flightHardware.get('motors');
+    if (enabled && motors?.visible) {
+      const rotors = motors.children.map(motor => motor.getObjectByName('motor-rotor'));
+      const initialAngle = motorAngle;
+      let started;
+      function spin(now) {
+        started ??= now;
+        const previewRpm = 300;
+        motorAngle = (initialAngle + (now - started) * previewRpm / 60000 * 2 * Math.PI) % (2 * Math.PI);
+        const props = flightHardware.get('props');
+        motorMounts.forEach(([x, z], index) => {
+          const angle = x !== z ? motorAngle : -motorAngle;
+          rotors[index].rotation.y = angle;
+          if (props?.visible) props.children[index].rotation.y = angle;
+        });
+        draw();
+        spinFrame = requestAnimationFrame(spin);
+      }
+      spinFrame = requestAnimationFrame(spin);
     }
-    let started;
-    const initialAngles = props.children.map(prop => prop.rotation.y);
-    function spin(now) {
-      started ??= now;
-      // Slow the visible blades to avoid strobing at typical display refresh rates.
-      const previewRpm = 300;
-      const angle = ((now - started) * previewRpm / 60000 % 1) * 2 * Math.PI;
-      props.children.forEach((prop, index) => {
-        prop.rotation.y = initialAngles[index] + (prop.scale.x < 0 ? angle : -angle);
-      });
-      draw();
-      propFrame = requestAnimationFrame(spin);
-    }
-    propFrame = requestAnimationFrame(spin);
+    syncPropSpin();
+    draw();
   }
 
   controls.addEventListener('change', draw);
@@ -571,7 +589,7 @@ export async function createStudioViewer(viewport) {
   new ResizeObserver(resize).observe(viewport);
   resize();
   return {
-    setPropSpin,
+    setMotorSpin,
     setColours(colours) {
       for (const [id, colour] of Object.entries(colours)) {
         (accessoryColours.get(id) ?? materials.get(id).color).set(colour);
@@ -604,7 +622,8 @@ export async function createStudioViewer(viewport) {
         }
       }
       for (const [id, assembly] of flightHardware) assembly.visible = Boolean(configuration[id]);
-      if (!configuration.props) setPropSpin(false);
+      if (!configuration.motors && spinFrame) setMotorSpin(false);
+      syncPropSpin();
       resize();
     },
     captureView() {

@@ -202,7 +202,7 @@ const editor = document.querySelector('#editor');
 const hardwareGroups = [...document.querySelectorAll('fieldset[data-slot]')];
 const accessoryToggles = [...document.querySelectorAll('[data-accessory]')];
 let hardware = {horn: false, shoes: false, motors: false, props: false};
-const spinProps = document.querySelector('#spin-props');
+const spinMotors = document.querySelector('#spin-motors');
 let contextLost = false;
 
 function showHardware() {
@@ -211,8 +211,8 @@ function showHardware() {
     toggle.checked = Boolean(hardware[id]);
     fields.get(id).details.hidden = !toggle.checked;
   }
-  spinProps.hidden = !hardware.props;
-  if (spinProps.hidden) spinProps.setAttribute('aria-pressed', 'false');
+  spinMotors.hidden = !hardware.motors;
+  if (spinMotors.hidden) spinMotors.setAttribute('aria-pressed', 'false');
   for (const group of hardwareGroups) {
     const slot = group.dataset.slot;
     const option = group.querySelector(hardware[slot] ? '[value="alternative"]' : '[value="stock"]');
@@ -267,10 +267,10 @@ for (const toggle of accessoryToggles) {
   });
 }
 
-spinProps.addEventListener('click', () => {
-  const spinning = spinProps.getAttribute('aria-pressed') !== 'true';
-  viewer.setPropSpin(spinning);
-  spinProps.setAttribute('aria-pressed', String(spinning));
+spinMotors.addEventListener('click', () => {
+  const spinning = spinMotors.getAttribute('aria-pressed') !== 'true';
+  viewer.setMotorSpin(spinning);
+  spinMotors.setAttribute('aria-pressed', String(spinning));
 });
 
 function savedDesignCard(design) {
@@ -328,13 +328,13 @@ new ResizeObserver(() => {
 function unavailable() {
   contextLost = true;
   editor.disabled = previewAdd.disabled = randomPreset.disabled = reset.disabled = true;
-  viewer?.setPropSpin(false);
+  viewer?.setMotorSpin(false);
   viewport.querySelector('canvas')?.remove();
   status.textContent = '3D preview unavailable. Reload with WebGL enabled to customise the frame.';
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=prop-preview-speed');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=motor-spin');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);

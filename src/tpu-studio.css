@@ -161,8 +161,8 @@
 }
 .flight-hardware input { accent-color: var(--purple); }
 
-.prop-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
-#spin-props {
+.motor-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+#spin-motors {
   padding: 4px 8px;
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -172,4 +172,4 @@
   font-size: .75rem;
   cursor: pointer;
 }
-#spin-props[aria-pressed="true"] { border-color: #be77f4; background: #372740; }
+#spin-motors[aria-pressed="true"] { border-color: #be77f4; background: #372740; }

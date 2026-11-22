@@ -22,8 +22,8 @@
     <meta name="twitter:image:alt" content="Shreddo 5 with violet TPU parts on a dark CAD grid">
     <link rel="icon" href="assets/favicon.png">
     <link rel="stylesheet" href="styles.css?v=20260806-credit">
-    <link rel="stylesheet" href="src/tpu-studio.css?v=spin-collection">
-    <script type="module" src="src/tpu-studio.js?v=prop-preview-speed"></script>
+    <link rel="stylesheet" href="src/tpu-studio.css?v=motor-spin">
+    <script type="module" src="src/tpu-studio.js?v=motor-spin"></script>
   </head>
   <body>
     <header class="site-header">
@@ -83,11 +83,11 @@
                 </fieldset>
                 <fieldset class="flight-hardware">
                   <legend>FPV Parts</legend>
-                  <label><input type="checkbox" data-accessory="motors"> Mepskings SZ V2 motors</label>
-                  <div class="prop-controls">
-                    <label><input type="checkbox" data-accessory="props"> Gemfan 51466 MCK V2 props</label>
-                    <button type="button" id="spin-props" aria-pressed="false" hidden>Spin props</button>
+                  <div class="motor-controls">
+                    <label><input type="checkbox" data-accessory="motors"> Mepskings SZ V2 motors</label>
+                    <button type="button" id="spin-motors" aria-pressed="false" hidden>Spin motors</button>
                   </div>
+                  <label><input type="checkbox" data-accessory="props"> Gemfan 51466 MCK V2 props</label>
                 </fieldset>
               </section>
               <p id="hardware-status" role="status"></p>
