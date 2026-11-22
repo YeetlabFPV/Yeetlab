@@ -191,11 +191,7 @@ async function loadCommunityGallery() {
       throw new Error("Community gallery could not be loaded.");
     }
 
-    const entries = await response.json();
-    const images = [
-      ...entries.filter(image => image.featured),
-      ...shuffledImages(entries.filter(image => !image.featured)),
-    ];
+    const images = shuffledImages(await response.json());
 
     communityGrid.innerHTML = "";
     images.forEach((image, index) => {

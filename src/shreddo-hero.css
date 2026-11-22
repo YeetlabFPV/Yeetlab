@@ -208,3 +208,10 @@
     transition: none;
   }
 }
+
+.shreddo-stage .hero-copy .hero-kit-details {
+  margin-top: 10px;
+  font-size: .875rem;
+  line-height: 1.5;
+  order: initial;
+}
