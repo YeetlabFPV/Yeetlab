@@ -442,7 +442,12 @@ export async function createStudioViewer(viewport) {
   async function loadFlightHardware(id) {
     const isMotor = id === 'motors';
     const file = isMotor ? 'studio-motor.glb' : 'studio-prop.glb';
-    const {scene: part} = await new GLTFLoader().loadAsync(new URL(file, modelUrl).href);
+    const loader = new GLTFLoader();
+    const [component, fastener] = await Promise.all([
+      loader.loadAsync(new URL(file, modelUrl).href),
+      isMotor ? null : loader.loadAsync(new URL('studio-prop-nut.glb', modelUrl).href),
+    ]);
+    const part = component.scene;
     part.traverse(mesh => {
       if (!mesh.isMesh) return;
       if (isMotor && mesh.material.name !== 'Leuchtgrün eloxiertes Gehäuse') return;
@@ -463,6 +468,18 @@ export async function createStudioViewer(viewport) {
         }
       }
       part.add(rotor);
+    }
+
+    if (fastener) {
+      const nut = fastener.scene;
+      nut.traverse(mesh => {
+        if (mesh.isMesh && mesh.material.name === 'Blau eloxiertes Aluminium') {
+          mesh.material.color.set('#33353b');
+        }
+      });
+      // The nut starts at its flange. Seat it on the hub in GLB metres.
+      nut.position.y = .0034;
+      part.add(nut);
     }
 
     const assembly = new Group();
@@ -507,7 +524,7 @@ export async function createStudioViewer(viewport) {
       let started;
       function spin(now) {
         started ??= now;
-        const previewRpm = 10000;
+        const previewRpm = 120;
         motorAngle = (initialAngle + (now - started) * previewRpm / 60000 * 2 * Math.PI) % (2 * Math.PI);
         const props = flightHardware.get('props');
         motorMounts.forEach(([x, z], index) => {
