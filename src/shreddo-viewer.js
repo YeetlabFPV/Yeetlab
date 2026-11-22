@@ -1,6 +1,6 @@
 import {
-  AmbientLight, Box3, CanvasTexture, Color, DirectionalLight, EdgesGeometry, Group, HemisphereLight,
-  LineBasicMaterial, LineSegments, LinearMipmapLinearFilter, PerspectiveCamera, RepeatWrapping, PCFSoftShadowMap, Scene,
+  AmbientLight, Box3, CanvasTexture, CircleGeometry, Color, DirectionalLight, DoubleSide, EdgesGeometry, Group, HemisphereLight,
+  LineBasicMaterial, LineSegments, LinearMipmapLinearFilter, Mesh, MeshBasicMaterial, PerspectiveCamera, RepeatWrapping, PCFSoftShadowMap, Scene,
   Spherical, Vector3, WebGLRenderer, MathUtils, NeutralToneMapping,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -439,6 +439,33 @@ export async function createStudioViewer(viewport) {
   const accessoryLoads = new Map();
   const motorMounts = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
 
+  let propMaterial;
+  const propBlur = new Group();
+
+  function createPropBlur() {
+    const textureCanvas = document.createElement('canvas');
+    textureCanvas.width = textureCanvas.height = 128;
+    const ctx = textureCanvas.getContext('2d');
+    const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    for (const [radius, opacity] of [[0, .68], [.1, .5], [.17, .1], [.36, .24], [.72, .34], [.9, .24], [1, 0]]) {
+      gradient.addColorStop(radius, `rgba(255,255,255,${opacity})`);
+    }
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 128, 128);
+    const geometry = new CircleGeometry(66, 48).rotateX(-Math.PI / 2);
+    const material = new MeshBasicMaterial({
+      map: new CanvasTexture(textureCanvas), transparent: true, depthWrite: false, side: DoubleSide,
+    });
+    material.color = accessoryColours.get('props');
+    for (const [x, z] of motorMounts) {
+      const disc = new Mesh(geometry, material);
+      disc.position.set(x * 72.314, 20.05, z * 86.18);
+      propBlur.add(disc);
+    }
+    propBlur.visible = false;
+    model.add(propBlur);
+  }
+
   async function loadFlightHardware(id) {
     const isMotor = id === 'motors';
     const file = isMotor ? 'studio-motor.glb' : 'studio-prop.glb';
@@ -450,6 +477,7 @@ export async function createStudioViewer(viewport) {
       if (!isMotor) {
         mesh.material.transparent = true;
         mesh.material.opacity = .78;
+        propMaterial = mesh.material;
         mesh.material.depthWrite = false;
       }
     });
@@ -467,6 +495,7 @@ export async function createStudioViewer(viewport) {
     }
     model.add(assembly);
     flightHardware.set(id, assembly);
+    if (!isMotor) createPropBlur();
   }
 
   const camera = new PerspectiveCamera(25, 1, 1, 4000);
@@ -488,7 +517,13 @@ export async function createStudioViewer(viewport) {
     cancelAnimationFrame(propFrame);
     propFrame = 0;
     const props = flightHardware.get('props');
-    if (!enabled || !props?.visible) return;
+    const spinning = enabled && Boolean(props?.visible);
+    propBlur.visible = spinning;
+    if (propMaterial) propMaterial.opacity = spinning ? .09 : .78;
+    if (!spinning) {
+      draw();
+      return;
+    }
     let started;
     const initialAngles = props.children.map(prop => prop.rotation.y);
     function spin(now) {

@@ -334,7 +334,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=spin-20k');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=prop-motion-blur');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);
