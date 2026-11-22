@@ -1045,6 +1045,8 @@ legend {
 }
 
 .guide-page {
+  --guide-accent: #ddbcf7;
+  --guide-violet-line: rgba(180, 124, 227, .24);
   max-width: 1100px;
   margin: 0 auto;
   padding: clamp(28px, 5vw, 58px) clamp(18px, 5vw, 56px);
@@ -1056,7 +1058,7 @@ legend {
   gap: 18px 28px;
   align-items: center;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--guide-violet-line);
 }
 
 .guide-hero h1 {
@@ -1077,11 +1079,12 @@ legend {
   padding: 10px 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #151418;
+  background: linear-gradient(115deg, #2a2119, #1b171a);
+  border-color: rgba(241, 190, 103, .3);
 }
 
 .guide-callout span {
-  color: var(--muted);
+  color: #edc48a;
   font-size: .8rem;
 }
 
@@ -1108,7 +1111,8 @@ legend {
   list-style: none;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #151418;
+  background: linear-gradient(115deg, #21182a, #151418 75%);
+  border-color: var(--guide-violet-line);
 }
 
 .hardware-grid li {
@@ -1123,7 +1127,7 @@ legend {
 .hardware-grid span {
   min-width: 2.5em;
   flex-shrink: 0;
-  color: var(--muted);
+  color: var(--guide-accent);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1143,11 +1147,16 @@ legend {
   padding: clamp(14px, 2vw, 22px);
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(17, 16, 20, 0.88);
+  background: linear-gradient(115deg, #21182a, #151418 59%);
+  border-color: var(--guide-violet-line);
 }
 
 .step-number {
-  color: var(--muted);
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: #372449;
+  color: var(--guide-accent);
   font-size: .8rem;
   font-weight: 650;
 }
