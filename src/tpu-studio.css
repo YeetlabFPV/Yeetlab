@@ -121,12 +121,3 @@
 .hardware-options label:focus-within { outline: 2px solid #dfacff; outline-offset: 1px; }
 .download-box { padding: 12px 16px; text-align: right; background: #151418; }
 .download-box .button { min-height: 40px; font-size: .88rem; }
-
-.studio-purchase {
-  padding: 14px 16px;
-  border: 1px solid #353039;
-  border-radius: 14px;
-  background: #151418;
-}
-.studio-purchase .button { width: 100%; text-align: center; }
-.studio-purchase p { margin: 9px 0 0; color: var(--muted); font-size: .875rem; }
