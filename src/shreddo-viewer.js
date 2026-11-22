@@ -196,6 +196,7 @@ function createRenderer() {
 export async function mountShreddo({ section, stage, media, header, signal }) {
   const renderer = createRenderer();
   const copy = stage.querySelector('.hero-copy');
+  const fullscreenHint = stage.querySelector(':scope > .shreddo-scroll-hint');
   renderer.domElement.setAttribute('aria-hidden', 'true');
 
   const scene = new Scene();
@@ -289,7 +290,10 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
       const focus = MathUtils.smoothstep(scroll, .13, .44);
       const progress = clamp((scroll - .13) / .78);
       const width = Math.round(MathUtils.lerp(media.clientWidth, stage.clientWidth, focus));
-      const height = Math.round(MathUtils.lerp(media.clientHeight, stage.clientHeight, focus));
+      // Leave room for the hint, its bottom inset, and a gap above it.
+      const hintSpace = fullscreenHint.offsetHeight + 32;
+      const fullscreenHeight = Math.max(1, stage.clientHeight - hintSpace);
+      const height = Math.round(MathUtils.lerp(media.clientHeight, fullscreenHeight, focus));
       if (!width || !height) return;
       const canvas = renderer.domElement;
       canvas.style.left = MathUtils.lerp(0, stageRect.left - view.left, focus) + 'px';
