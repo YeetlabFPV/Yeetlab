@@ -561,12 +561,14 @@ export async function createStudioViewer(viewport) {
     const motors = flightHardware.get('motors');
     if (enabled && motors?.visible) {
       const rotors = motors.children.map(motor => motor.getObjectByName('motor-rotor'));
-      const initialAngle = motorAngle;
-      let started;
+      let previousFrame;
       function spin(now) {
-        started ??= now;
-        const previewRpm = 10000;
-        motorAngle = (initialAngle + (now - started) * previewRpm / 60000 * 2 * Math.PI) % (2 * Math.PI);
+        const elapsed = now - (previousFrame ?? now);
+        previousFrame = now;
+        // Keep the rendered step below half the spacing between the 12 spokes.
+        // This avoids a stationary or reversed appearance at low frame rates.
+        const step = Math.min(elapsed * .45, 9);
+        motorAngle = (motorAngle + MathUtils.degToRad(step)) % (2 * Math.PI);
         const props = flightHardware.get('props');
         motorMounts.forEach(([x, z], index) => {
           const angle = x !== z ? motorAngle : -motorAngle;
