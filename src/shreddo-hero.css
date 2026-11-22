@@ -1,5 +1,6 @@
 .shreddo-hero {
   --shreddo-header: 76px;
+  --shreddo-nav-space: var(--shreddo-header);
   --shreddo-travel: clamp(740px, 158svh, 1500px);
   background: #0a090c;
 }
@@ -12,7 +13,7 @@
   grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
   align-items: center;
   gap: clamp(8px, 2vw, 36px);
-  min-height: calc(100svh - var(--shreddo-header));
+  min-height: calc(100svh - var(--shreddo-nav-space));
   padding: clamp(24px, 4vw, 64px);
   padding-inline: max(clamp(24px, 4vw, 64px), calc((100% - 1512px) / 2));
 }
@@ -66,7 +67,7 @@
 
 .has-shreddo-model .shreddo-stage {
   position: sticky;
-  top: var(--shreddo-header);
+  top: var(--shreddo-nav-space);
 }
 
 .shreddo-scroll-hint {
@@ -187,4 +188,23 @@
   margin: 0;
   opacity: var(--explosion-focus, 0);
   pointer-events: none;
+}
+
+
+.site-header {
+  transition: transform 180ms ease;
+}
+
+.site-header-hidden {
+  transform: translateY(-100%);
+}
+
+.shreddo-hero[data-navigation-hidden] {
+  --shreddo-nav-space: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
+  }
 }
