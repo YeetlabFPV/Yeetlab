@@ -13,9 +13,8 @@
   align-items: center;
   gap: clamp(8px, 2vw, 36px);
   min-height: calc(100svh - var(--shreddo-header));
-  max-width: 1640px;
-  margin: 0 auto;
   padding: clamp(24px, 4vw, 64px);
+  padding-inline: max(clamp(24px, 4vw, 64px), calc((100% - 1512px) / 2));
 }
 
 .shreddo-stage .hero-copy {
@@ -171,4 +170,21 @@
 
 .shreddo-hero[data-exploded] .shreddo-scroll-hint [data-open] {
   display: inline;
+}
+
+.has-shreddo-model .shreddo-stage {
+  overflow: clip;
+}
+
+.has-shreddo-model .hero-copy,
+.has-shreddo-model .shreddo-visual .shreddo-scroll-hint {
+  opacity: calc(1 - var(--explosion-focus, 0));
+}
+
+.shreddo-stage > .shreddo-scroll-hint {
+  position: absolute;
+  inset: auto 16px 12px;
+  margin: 0;
+  opacity: var(--explosion-focus, 0);
+  pointer-events: none;
 }

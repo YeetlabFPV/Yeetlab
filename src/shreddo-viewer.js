@@ -195,6 +195,7 @@ function createRenderer() {
 
 export async function mountShreddo({ section, stage, media, header, signal }) {
   const renderer = createRenderer();
+  const copy = stage.querySelector('.hero-copy');
   renderer.domElement.setAttribute('aria-hidden', 'true');
 
   const scene = new Scene();
@@ -231,6 +232,8 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
     renderer.domElement.remove();
     section.classList.remove('has-shreddo-model');
     section.removeAttribute('data-exploded');
+    stage.style.removeProperty('--explosion-focus');
+    copy.inert = false;
     modelRoot.traverse((mesh) => {
       if (!mesh.isMesh && !mesh.isLineSegments) return;
       mesh.geometry.dispose();
@@ -280,18 +283,25 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
       clearTimeout(colorTimer);
       const view = media.getBoundingClientRect();
       if (document.hidden || view.bottom <= 0 || view.top >= innerHeight) return;
-      const width = media.clientWidth;
-      const height = media.clientHeight;
+      const stageRect = stage.getBoundingClientRect();
+      const travel = Math.max(1, section.offsetHeight - stage.offsetHeight);
+      const scroll = clamp((header.offsetHeight - section.getBoundingClientRect().top) / travel);
+      const focus = MathUtils.smoothstep(scroll, .13, .44);
+      const progress = clamp((scroll - .13) / .78);
+      const width = Math.round(MathUtils.lerp(media.clientWidth, stage.clientWidth, focus));
+      const height = Math.round(MathUtils.lerp(media.clientHeight, stage.clientHeight, focus));
       if (!width || !height) return;
+      const canvas = renderer.domElement;
+      canvas.style.left = MathUtils.lerp(0, stageRect.left - view.left, focus) + 'px';
+      canvas.style.top = MathUtils.lerp(0, stageRect.top - view.top, focus) + 'px';
+      stage.style.setProperty('--explosion-focus', focus);
+      copy.inert = focus >= .99;
       if (width !== lastWidth || height !== lastHeight) {
-        renderer.setPixelRatio(Math.min(devicePixelRatio, 2, 1600 / width));
-        renderer.setSize(width, height, false);
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2, 1800 / Math.max(width, height)));
+        renderer.setSize(width, height);
         lastWidth = width;
         lastHeight = height;
       }
-      const travel = Math.max(1, section.offsetHeight - stage.offsetHeight);
-      const scroll = clamp((header.offsetHeight - section.getBoundingClientRect().top) / travel);
-      const progress = clamp((scroll - .13) / .78);
       section.toggleAttribute('data-exploded', progress === 1);
       const narrow = window.innerWidth <= 620;
       const protectorLift = 38 * MathUtils.smoothstep(progress, .43, .78);
@@ -312,7 +322,7 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
       const halfWidth = (bounds.max.x - bounds.min.x) / 2;
       const halfHeight = (bounds.max.y - bounds.min.y) / 2;
       const actualAspect = width / height;
-      const vertical = Math.max(halfWidth / aspect, halfHeight, halfWidth / actualAspect)
+      const vertical = Math.max(halfWidth / MathUtils.lerp(aspect, actualAspect, focus), halfHeight, halfWidth / actualAspect)
         * MathUtils.lerp(1.08, narrow ? 1.19 : 1.14, progress);
       const nearDepth = bounds.max.z - projectedOrigin.z;
       const distance = vertical / Math.tan(MathUtils.degToRad(camera.fov / 2)) + nearDepth * .65;
