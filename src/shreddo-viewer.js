@@ -489,8 +489,8 @@ export async function createStudioViewer(viewport) {
       const instance = part.clone();
       // The accessory GLBs use metres. The frame uses millimetres.
       instance.scale.set(!isMotor && x !== z ? -1000 : 1000, 1000, 1000);
-      // Centres of the motor holes in the carbon arms. Props sit on the motor bell.
-      instance.position.set(x * 72.314, isMotor ? 0 : 20.05, z * 86.18);
+      // The prop hub extends 3.4 mm below its origin and seats at 19.8 mm on the motor hub.
+      instance.position.set(x * 72.314, isMotor ? 0 : 23.2, z * 86.18);
       assembly.add(instance);
     }
     model.add(assembly);
