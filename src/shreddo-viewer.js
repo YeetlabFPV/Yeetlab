@@ -519,7 +519,7 @@ export async function createStudioViewer(viewport) {
     const props = flightHardware.get('props');
     const spinning = enabled && Boolean(props?.visible);
     propBlur.visible = spinning;
-    if (propMaterial) propMaterial.opacity = spinning ? .09 : .78;
+    if (propMaterial) propMaterial.opacity = spinning ? .22 : .78;
     if (!spinning) {
       draw();
       return;
@@ -528,7 +528,9 @@ export async function createStudioViewer(viewport) {
     const initialAngles = props.children.map(prop => prop.rotation.y);
     function spin(now) {
       started ??= now;
-      const angle = ((now - started) * 20000 / 60000 % 1) * 2 * Math.PI;
+      // Slow the visible blades to avoid strobing at typical display refresh rates.
+      const previewRpm = 300;
+      const angle = ((now - started) * previewRpm / 60000 % 1) * 2 * Math.PI;
       props.children.forEach((prop, index) => {
         prop.rotation.y = initialAngles[index] + (prop.scale.x < 0 ? angle : -angle);
       });
