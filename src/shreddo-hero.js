@@ -15,7 +15,7 @@ async function enableModel() {
   if (motion.matches) return;
 
   try {
-    const { mountShreddo } = await import('../assets/shreddo-hero/viewer.js?v=hint-clearance');
+    const { mountShreddo } = await import('../assets/shreddo-hero/viewer.js?v=shop-anchor');
     if (request.signal.aborted) return;
     const release = await mountShreddo({ section, stage, media, header, signal: request.signal });
     if (!request.signal.aborted) dispose = release;
@@ -39,9 +39,12 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 header.addEventListener('focusin', () => setNavigationHidden(false));
 
-new ResizeObserver(() => {
-  section.style.setProperty('--shreddo-header', `${header.getBoundingClientRect().height}px`);
-}).observe(header);
-section.style.setProperty('--shreddo-header', `${header.getBoundingClientRect().height}px`);
+function syncHeaderHeight() {
+  const height = `${header.getBoundingClientRect().height}px`;
+  section.style.setProperty('--shreddo-header', height);
+  document.documentElement.style.setProperty('--shop-header-height', height);
+}
+new ResizeObserver(syncHeaderHeight).observe(header);
+syncHeaderHeight();
 motion.addEventListener('change', enableModel);
 enableModel();

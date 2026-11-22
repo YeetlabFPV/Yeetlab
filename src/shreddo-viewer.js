@@ -346,7 +346,10 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
       else colorTimer = setTimeout(schedule, colorPeriod - fadeDuration - phase);
     };
 
+    const checkout = document.querySelector('#checkout:target');
+    const checkoutIsInView = checkout && Math.abs(checkout.getBoundingClientRect().top - header.offsetHeight) < 90;
     section.classList.add('has-shreddo-model');
+    if (checkoutIsInView) checkout.scrollIntoView({ behavior: 'instant' });
     media.append(renderer.domElement);
     render();
     observer = new ResizeObserver(schedule);

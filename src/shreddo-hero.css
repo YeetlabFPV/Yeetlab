@@ -215,3 +215,16 @@
   line-height: 1.5;
   order: initial;
 }
+
+/* Keep the sections below the hero in place when the header slides away. */
+.has-shreddo-model[data-navigation-hidden]::after {
+  height: calc(var(--shreddo-travel) - var(--shreddo-header));
+}
+
+#checkout {
+  scroll-margin-top: calc(var(--shop-header-height, 76px) + 12px);
+}
+
+html:has(#checkout:target) {
+  scroll-behavior: auto;
+}
