@@ -493,7 +493,7 @@ export async function createStudioViewer(viewport) {
     const initialAngles = props.children.map(prop => prop.rotation.y);
     function spin(now) {
       started ??= now;
-      const angle = ((now - started) * 10000 / 60000 % 1) * 2 * Math.PI;
+      const angle = ((now - started) * 20000 / 60000 % 1) * 2 * Math.PI;
       props.children.forEach((prop, index) => {
         prop.rotation.y = initialAngles[index] + (prop.scale.x < 0 ? angle : -angle);
       });
