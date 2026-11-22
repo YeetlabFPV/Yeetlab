@@ -24,6 +24,8 @@ function loadSavedColours() {
 }
 const savedColours = loadSavedColours();
 
+const defaultPreset = heroPresets[0];
+const randomPreset = document.querySelector('#random-preset');
 const collection = document.querySelector('#hero-presets');
 const collectionStatus = document.querySelector('#collection-status');
 const emptyCollection = document.querySelector('#collection-empty');
@@ -69,14 +71,15 @@ function createCard(name, thumbnail, onSelect) {
     if (radio === activeCard) selectCard(null);
     card.remove();
     emptyCollection.hidden = Boolean(collection.childElementCount);
-    collectionStatus.textContent = name + ' removed until refresh.';
+    collectionStatus.textContent = '';
     (neighbour?.querySelector('input') || addDesign).focus();
   });
   card.append(label, remove);
   return card;
 }
 
-for (const preset of heroPresets) {
+{
+  const preset = defaultPreset;
   const name = preset[0];
   const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp?v=twill';
   const card = createCard(name, thumbnail, radio => {
@@ -84,7 +87,7 @@ for (const preset of heroPresets) {
     applyPreset(preset);
   });
   collection.append(card);
-  if (preset === heroPresets[0]) selectCard(card.querySelector('input'));
+  selectCard(card.querySelector('input'));
 }
 
 function displayColour(id, colour) {
@@ -197,7 +200,7 @@ function showHardware() {
 
 async function switchBuild(next, design, radio) {
   if (editor.disabled) return;
-  editor.disabled = previewAdd.disabled = true;
+  editor.disabled = previewAdd.disabled = randomPreset.disabled = true;
   hardwareStatus.textContent = '';
   try {
     await viewer.setHardware(next);
@@ -220,7 +223,7 @@ async function switchBuild(next, design, radio) {
     hardwareStatus.textContent = 'Could not load this build. Try again.';
     console.warn('Build unavailable', error);
   } finally {
-    editor.disabled = previewAdd.disabled = contextLost;
+    editor.disabled = previewAdd.disabled = randomPreset.disabled = contextLost;
   }
 }
 
@@ -250,7 +253,7 @@ function addCurrentDesign() {
 addDesign.addEventListener('click', addCurrentDesign);
 previewAdd.addEventListener('click', addCurrentDesign);
 
-document.querySelector('#random-preset').addEventListener('click', () => {
+randomPreset.addEventListener('click', () => {
   collectionStatus.textContent = '';
   const {preset, position, total} = nextRandomPreset();
   selectCard(null);
@@ -258,7 +261,7 @@ document.querySelector('#random-preset').addEventListener('click', () => {
   presetName.textContent = preset[0] + ' · ' + position + '/' + total;
 });
 
-applyPreset(heroPresets[0]);
+applyPreset(defaultPreset);
 refreshPalette();
 reset.addEventListener('click', () => viewer.resetView());
 
@@ -269,7 +272,7 @@ new ResizeObserver(() => {
 
 function unavailable() {
   contextLost = true;
-  editor.disabled = previewAdd.disabled = reset.disabled = true;
+  editor.disabled = previewAdd.disabled = randomPreset.disabled = reset.disabled = true;
   viewport.querySelector('canvas')?.remove();
   status.textContent = '3D preview unavailable. Reload with WebGL enabled to customise the frame.';
 }
@@ -278,9 +281,9 @@ try {
   const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=twill');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
-  applyPreset(heroPresets[0]);
+  applyPreset(defaultPreset);
   showHardware();
-  editor.disabled = previewAdd.disabled = reset.disabled = false;
+  editor.disabled = previewAdd.disabled = randomPreset.disabled = reset.disabled = false;
   status.textContent = 'Drag to rotate · Scroll or pinch to zoom';
 } catch (error) {
   console.warn('TPU Studio unavailable', error);

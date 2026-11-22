@@ -89,15 +89,20 @@
   color: #c1b6ca; background: transparent; font: 1rem/1 system-ui; cursor: pointer;
 }
 .remove-card:hover, .remove-card:focus-visible { color: white; background: #49394e; }
-.preset-toolbar { display: flex; gap: 8px; margin: 10px 0 12px; }
-.preset-toolbar button, .studio .collection-action {
+.preview-footer { flex-wrap: wrap; }
+.preview-actions { display: flex; gap: 8px; margin-left: auto; }
+.studio .preview-actions .button { min-height: 36px; }
+.studio .preview-actions .primary { background: var(--purple); border-color: transparent; }
+.preview-actions .button:disabled { opacity: .55; cursor: default; }
+#presets .preset-grid { margin-top: 10px; }
+.studio .collection-action {
   min-height: 36px; padding: 6px 12px; border: 1px solid #59515f; border-radius: 6px;
   background: #26232b; color: var(--ink); font: inherit; font-size: .84rem; font-weight: 650; cursor: pointer;
 }
 .studio .collection-action { background: #733399; border-color: #9c5fc1; flex-shrink: 0; }
 .studio .collection-action:disabled { opacity: .55; cursor: default; }
 #add-to-collection { margin-top: 12px; width: 100%; }
-.preset-toolbar button:hover, .studio .collection-action:hover { border-color: #d39af8; }
+.studio .collection-action:hover { border-color: #d39af8; }
 #collection-status, #collection-empty, #hardware-status { margin: 8px 0 0; color: #cec3d7; font-size: .8rem; }
 #collection-status:empty, #hardware-status:empty { display: none; }
 

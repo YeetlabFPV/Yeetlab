@@ -7,8 +7,8 @@
     <title>TPU Studio | Yeetlab Shreddo 5</title>
     <link rel="icon" href="assets/favicon.png">
     <link rel="stylesheet" href="styles.css?v=20260806-credit">
-    <link rel="stylesheet" href="src/tpu-studio.css?v=download-button">
-    <script type="module" src="src/tpu-studio.js?v=twill"></script>
+    <link rel="stylesheet" href="src/tpu-studio.css?v=collection-layout">
+    <script type="module" src="src/tpu-studio.js?v=collection-layout"></script>
   </head>
   <body>
     <header class="site-header">
@@ -37,7 +37,10 @@
           </div>
           <div class="preview-footer">
             <p id="viewer-status" role="status">Loading the 3D frame…</p>
-            <button type="button" class="collection-action" id="preview-add" disabled>Add to collection</button>
+            <div class="preview-actions">
+              <button type="button" class="button ghost" id="random-preset" disabled>Generate random</button>
+              <button type="button" class="button primary" id="preview-add" disabled>Add to collection</button>
+            </div>
           </div>
           <noscript>Enable JavaScript to edit the colours and rotate the frame.</noscript>
         </section>
@@ -46,9 +49,6 @@
             <fieldset id="editor" disabled>
               <fieldset id="presets">
                 <legend class="panel-title">Collection</legend>
-                <div class="preset-toolbar">
-                  <button type="button" id="random-preset" title="Try one of 50 extra colourways">Random</button>
-                </div>
                 <div class="preset-grid" id="hero-presets"></div>
                 <p id="collection-empty" hidden>Your collection is empty. Add the current design to start again.</p>
                 <p id="collection-status" role="status"></p>
