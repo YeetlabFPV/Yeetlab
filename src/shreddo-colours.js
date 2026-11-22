@@ -20,6 +20,6 @@ export const studioParts = [
 ];
 
 export const studioAccessories = [
-  { id: 'motors', name: 'Motor colour', colour: '#04bcb7' },
-  { id: 'props', name: 'Propeller colour', colour: '#8642e8' },
+  { id: 'motors', name: 'Motor color', colour: '#04bcb7' },
+  { id: 'props', name: 'Propeller color', colour: '#8642e8' },
 ];

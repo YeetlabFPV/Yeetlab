@@ -1,4 +1,4 @@
-import { heroPresets, studioParts, studioAccessories } from './shreddo-colours.js?v=studio-accessories';
+import { heroPresets, studioParts, studioAccessories } from './shreddo-colours.js?v=color-lab';
 
 import { nextRandomPreset } from './studio-random.js';
 
@@ -113,14 +113,14 @@ function displayColour(id, colour) {
   field.chip.style.backgroundColor = colour;
   const saved = savedColours.includes(colour);
   field.save.disabled = saved;
-  field.save.textContent = saved ? 'Colour saved' : 'Save colour';
+  field.save.textContent = saved ? 'Color saved' : 'Save color';
 }
 
 function setPartColour(id, colour) {
   displayColour(id, colour);
   selectCard(null);
   randomColourway = undefined;
-  presetName.textContent = 'Custom colours';
+  presetName.textContent = 'Custom colors';
   viewer.setColours({[id]: colour});
 }
 
@@ -159,17 +159,17 @@ for (const part of [...studioParts, ...studioAccessories]) {
   const body = document.createElement('div');
   body.className = 'colour-tools';
   const picker = document.createElement('label');
-  picker.textContent = 'Pick colour';
+  picker.textContent = 'Pick color';
   const input = document.createElement('input');
   input.type = 'color';
   input.id = part.id;
-  input.setAttribute('aria-label', part.name + ' colour');
+  input.setAttribute('aria-label', part.name + ' color');
   picker.append(input);
   const save = document.createElement('button');
   save.type = 'button';
   const savedSection = document.createElement('div');
   savedSection.className = 'saved-section';
-  savedSection.textContent = 'Saved colours';
+  savedSection.textContent = 'Saved colors';
   const list = document.createElement('div');
   list.className = 'saved-swatches';
   savedSection.append(list);
@@ -220,7 +220,7 @@ function showHardware() {
     const field = fields.get(slot);
     field.name = option.parentElement.textContent.trim();
     field.title.textContent = field.name;
-    field.input.setAttribute('aria-label', field.name + ' colour');
+    field.input.setAttribute('aria-label', field.name + ' color');
   }
   refreshPalette();
 }
@@ -330,11 +330,11 @@ function unavailable() {
   editor.disabled = previewAdd.disabled = randomPreset.disabled = reset.disabled = true;
   viewer?.setMotorSpin(false);
   viewport.querySelector('canvas')?.remove();
-  status.textContent = '3D preview unavailable. Reload with WebGL enabled to customise the frame.';
+  status.textContent = '3D preview unavailable. Reload with WebGL enabled to customize the frame.';
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=motor-step');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=color-lab');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);
@@ -342,6 +342,6 @@ try {
   editor.disabled = previewAdd.disabled = randomPreset.disabled = reset.disabled = false;
   status.textContent = 'Drag to rotate · Scroll or pinch to zoom';
 } catch (error) {
-  console.warn('TPU Studio unavailable', error);
+  console.warn('TPU Lab unavailable', error);
   unavailable();
 }
