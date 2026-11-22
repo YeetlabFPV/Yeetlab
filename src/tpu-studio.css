@@ -103,8 +103,8 @@
 .studio .collection-action:disabled { opacity: .55; cursor: default; }
 #add-to-collection { margin-top: 12px; width: 100%; }
 .studio .collection-action:hover { border-color: #d39af8; }
-#collection-status, #collection-empty, #hardware-status { margin: 8px 0 0; color: #cec3d7; font-size: .8rem; }
-#collection-status:empty, #hardware-status:empty { display: none; }
+#collection-empty, #hardware-status { margin: 8px 0 0; color: #cec3d7; font-size: .8rem; }
+#hardware-status:empty { display: none; }
 
 .hardware-controls { margin-top: 18px; border-block: 1px solid #38313d; }
 .hardware-controls h2 { margin: 14px 0 8px; }

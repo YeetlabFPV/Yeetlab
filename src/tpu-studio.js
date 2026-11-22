@@ -25,9 +25,9 @@ function loadSavedColours() {
 const savedColours = loadSavedColours();
 
 const defaultPreset = heroPresets[0];
+let randomColourway;
 const randomPreset = document.querySelector('#random-preset');
 const collection = document.querySelector('#hero-presets');
-const collectionStatus = document.querySelector('#collection-status');
 const emptyCollection = document.querySelector('#collection-empty');
 const addDesign = document.querySelector('#add-to-collection');
 const previewAdd = document.querySelector('#preview-add');
@@ -56,7 +56,6 @@ function createCard(name, thumbnail, onSelect) {
   caption.textContent = name;
   label.append(radio, image, caption);
   radio.addEventListener('change', () => {
-    collectionStatus.textContent = '';
     onSelect(radio);
   });
 
@@ -71,7 +70,6 @@ function createCard(name, thumbnail, onSelect) {
     if (radio === activeCard) selectCard(null);
     card.remove();
     emptyCollection.hidden = Boolean(collection.childElementCount);
-    collectionStatus.textContent = '';
     (neighbour?.querySelector('input') || addDesign).focus();
   });
   card.append(label, remove);
@@ -103,6 +101,7 @@ function displayColour(id, colour) {
 function setPartColour(id, colour) {
   displayColour(id, colour);
   selectCard(null);
+  randomColourway = undefined;
   presetName.textContent = 'Custom colours';
   viewer.setColours({[id]: colour});
 }
@@ -169,6 +168,7 @@ for (const part of studioParts) {
 }
 
 function applyPreset([name, first, second]) {
+  randomColourway = undefined;
   const colours = {};
   for (const part of studioParts) {
     colours[part.id] = part.zone === 0 ? first : second;
@@ -210,6 +210,7 @@ async function switchBuild(next, design, radio) {
       for (const [id, colour] of Object.entries(design.colours)) displayColour(id, colour);
       viewer.setColours(design.colours);
       selectCard(radio);
+      randomColourway = design.randomColourway;
       presetName.textContent = radio.value;
       viewer.restoreView(design.view);
     } else if (activeCard?.hasAttribute('data-saved-build')) {
@@ -236,10 +237,11 @@ for (const group of hardwareGroups) {
 function addCurrentDesign() {
   const design = {
     hardware: {...hardware},
+    randomColourway,
     colours: Object.fromEntries([...fields].map(([id, field]) => [id, field.input.value])),
     view: viewer.captureView(),
   };
-  const name = 'Design ' + ++designCount;
+  const name = randomColourway ?? 'Design ' + ++designCount;
   const card = createCard(name, design.view.image, radio => switchBuild(design.hardware, design, radio));
   collection.prepend(card);
   const radio = card.querySelector('input');
@@ -247,18 +249,17 @@ function addCurrentDesign() {
   selectCard(radio);
   presetName.textContent = name;
   emptyCollection.hidden = true;
-  collectionStatus.textContent = name + ' added until refresh.';
 }
 
 addDesign.addEventListener('click', addCurrentDesign);
 previewAdd.addEventListener('click', addCurrentDesign);
 
 randomPreset.addEventListener('click', () => {
-  collectionStatus.textContent = '';
   const {preset, position, total} = nextRandomPreset();
   selectCard(null);
   applyPreset(preset);
-  presetName.textContent = preset[0] + ' · ' + position + '/' + total;
+  randomColourway = preset[0];
+  presetName.textContent = randomColourway + ' · ' + position + '/' + total;
 });
 
 applyPreset(defaultPreset);
