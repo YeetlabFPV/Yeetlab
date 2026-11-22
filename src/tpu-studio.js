@@ -275,7 +275,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=csp');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(heroPresets[0]);

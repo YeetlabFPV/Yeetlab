@@ -6,7 +6,18 @@ import {
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { heroPresets, studioParts } from './shreddo-colours.js';
-import { MeshoptDecoder } from 'meshoptimizer';
+import { MeshoptDecoder as wasmDecoder } from 'meshoptimizer/decoder';
+import { MeshoptDecoder as jsDecoder } from './vendor/meshopt_decoder_reference.js';
+
+let MeshoptDecoder = jsDecoder;
+try {
+  if (wasmDecoder.supported) {
+    await wasmDecoder.ready;
+    MeshoptDecoder = wasmDecoder;
+  }
+} catch {
+  // The production Content Security Policy can deny WebAssembly compilation.
+}
 
 const modelUrl = new URL('./shreddo.glb', import.meta.url);
 // The rear braces echo the canopy colour. The camera inserts echo the shoes.
