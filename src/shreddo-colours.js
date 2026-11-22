@@ -18,3 +18,8 @@ export const studioParts = [
   { id: 'vtx', name: 'VTX Side Plates', groups: ['rearSide'], zone: 1 },
   { id: 'rear', name: 'Rear Braces', groups: ['rearTop', 'rearBottom'], zone: 0 },
 ];
+
+export const studioAccessories = [
+  { id: 'motors', name: 'Motor colour', colour: '#04bcb7' },
+  { id: 'props', name: 'Propeller colour', colour: '#8642e8' },
+];

@@ -151,3 +151,12 @@
   font-size: .7rem;
   font-weight: 700;
 }
+
+.flight-hardware label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: .875rem;
+}
+.flight-hardware input { accent-color: var(--purple); }

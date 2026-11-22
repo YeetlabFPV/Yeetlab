@@ -1,4 +1,4 @@
-import { heroPresets, studioParts } from './shreddo-colours.js';
+import { heroPresets, studioParts, studioAccessories } from './shreddo-colours.js';
 
 import { nextRandomPreset } from './studio-random.js';
 
@@ -124,7 +124,7 @@ function refreshPalette() {
   }
 }
 
-for (const part of studioParts) {
+for (const part of [...studioParts, ...studioAccessories]) {
   const details = document.createElement('details');
   details.className = 'part-editor';
   details.name = 'studio-part';
@@ -181,11 +181,13 @@ function applyPreset([name, first, second]) {
 const hardwareStatus = document.querySelector('#hardware-status');
 const editor = document.querySelector('#editor');
 const hardwareGroups = [...document.querySelectorAll('fieldset[data-slot]')];
-let hardware = {horn: false, shoes: false};
+const accessoryToggles = [...document.querySelectorAll('[data-accessory]')];
+let hardware = {horn: false, shoes: false, motors: false, props: false};
 let designCount = 0;
 let contextLost = false;
 
 function showHardware() {
+  for (const toggle of accessoryToggles) toggle.checked = hardware[toggle.dataset.accessory];
   for (const group of hardwareGroups) {
     const slot = group.dataset.slot;
     const option = group.querySelector(hardware[slot] ? '[value="alternative"]' : '[value="stock"]');
@@ -234,6 +236,12 @@ for (const group of hardwareGroups) {
   });
 }
 
+for (const toggle of accessoryToggles) {
+  toggle.addEventListener('change', () => {
+    switchBuild({...hardware, [toggle.dataset.accessory]: toggle.checked});
+  });
+}
+
 function addCurrentDesign() {
   const design = {
     hardware: {...hardware},
@@ -263,6 +271,7 @@ randomPreset.addEventListener('click', () => {
 });
 
 applyPreset(defaultPreset);
+for (const part of studioAccessories) displayColour(part.id, part.colour);
 refreshPalette();
 reset.addEventListener('click', () => viewer.resetView());
 
@@ -279,7 +288,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=twill');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=accessories');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);

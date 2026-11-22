@@ -5,7 +5,7 @@ import {
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { heroPresets, studioParts } from './shreddo-colours.js';
+import { heroPresets, studioParts, studioAccessories } from './shreddo-colours.js';
 import { MeshoptDecoder as wasmDecoder } from 'meshoptimizer/decoder';
 import { MeshoptDecoder as jsDecoder } from './vendor/meshopt_decoder_reference.js';
 
@@ -434,6 +434,41 @@ export async function createStudioViewer(viewport) {
     return replacements;
   }
 
+  const accessoryColours = new Map(studioAccessories.map(({id, colour}) => [id, new Color(colour)]));
+  const flightHardware = new Map();
+  const accessoryLoads = new Map();
+  const motorMounts = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+
+  async function loadFlightHardware(id) {
+    const isMotor = id === 'motors';
+    const file = isMotor ? 'studio-motor.glb' : 'studio-prop.glb';
+    const {scene: part} = await new GLTFLoader().loadAsync(new URL(file, modelUrl).href);
+    part.traverse(mesh => {
+      if (!mesh.isMesh) return;
+      if (isMotor && mesh.material.name !== 'Leuchtgrün eloxiertes Gehäuse') return;
+      mesh.material.color = accessoryColours.get(id);
+      if (!isMotor) {
+        mesh.material.transparent = true;
+        mesh.material.opacity = .78;
+        mesh.material.depthWrite = false;
+      }
+    });
+
+    const assembly = new Group();
+    assembly.name = id;
+    assembly.visible = false;
+    for (const [x, z] of motorMounts) {
+      const instance = part.clone();
+      // The accessory GLBs use metres. The frame uses millimetres.
+      instance.scale.set(!isMotor && x !== z ? -1000 : 1000, 1000, 1000);
+      // Centres of the motor holes in the carbon arms. Props sit on the motor bell.
+      instance.position.set(x * 72.314, isMotor ? 0 : 20.05, z * 86.18);
+      assembly.add(instance);
+    }
+    model.add(assembly);
+    flightHardware.set(id, assembly);
+  }
+
   const camera = new PerspectiveCamera(25, 1, 1, 4000);
   camera.position.set(-325, 265, 405);
   const canvas = renderer.domElement;
@@ -466,7 +501,8 @@ export async function createStudioViewer(viewport) {
     const width = viewport.clientWidth;
     const height = viewport.clientHeight;
     const aspect = width / height;
-    const halfHeight = Math.max(96, 128 / aspect);
+    const halfWidth = flightHardware.get('props')?.visible ? 154 : 128;
+    const halfHeight = Math.max(96, halfWidth / aspect);
     camera.aspect = aspect;
     camera.fov = MathUtils.radToDeg(2 * Math.atan(halfHeight / initialDistance));
     camera.updateProjectionMatrix();
@@ -479,22 +515,38 @@ export async function createStudioViewer(viewport) {
   resize();
   return {
     setColours(colours) {
-      for (const [id, colour] of Object.entries(colours)) materials.get(id).color.set(colour);
+      for (const [id, colour] of Object.entries(colours)) {
+        (accessoryColours.get(id) ?? materials.get(id).color).set(colour);
+      }
       draw();
     },
     async setHardware(configuration) {
-      if (Object.values(configuration).some(Boolean) || alternatives) {
+      if (configuration.horn || configuration.shoes) {
         alternatives ??= loadAlternatives().catch(error => {
           alternatives = undefined;
           throw error;
         });
-        const replacements = await alternatives;
-        for (const [slot, alternative] of Object.entries(configuration)) {
-          for (const part of stockParts[slot]) part.visible = !alternative;
-          replacements[slot].visible = alternative;
+      }
+      const accessoryRequests = [];
+      for (const id of accessoryColours.keys()) {
+        if (!configuration[id]) continue;
+        if (!accessoryLoads.has(id)) {
+          accessoryLoads.set(id, loadFlightHardware(id).catch(error => {
+            accessoryLoads.delete(id);
+            throw error;
+          }));
+        }
+        accessoryRequests.push(accessoryLoads.get(id));
+      }
+      const [replacements] = await Promise.all([alternatives, ...accessoryRequests]);
+      if (replacements) {
+        for (const [slot, parts] of Object.entries(stockParts)) {
+          for (const part of parts) part.visible = !configuration[slot];
+          replacements[slot].visible = Boolean(configuration[slot]);
         }
       }
-      draw();
+      for (const [id, assembly] of flightHardware) assembly.visible = Boolean(configuration[id]);
+      resize();
     },
     captureView() {
       draw();
