@@ -282,7 +282,7 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
     const shifted = new Box3();
     const target = new Vector3();
     const projectedOrigin = new Vector3().applyMatrix4(cameraAxes);
-    const mobileTravel = new Vector3(.79, .85, .79);
+    const mobileTravel = new Vector3(.55, 2.35, .55);
     let lastWidth = 0;
     let lastHeight = 0;
 
@@ -334,7 +334,7 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
       const halfHeight = (bounds.max.y - bounds.min.y) / 2;
       const actualAspect = width / height;
       const vertical = Math.max(halfWidth / MathUtils.lerp(aspect, actualAspect, focus), halfHeight, halfWidth / actualAspect)
-        * MathUtils.lerp(1.08, narrow ? 1.19 : 1.14, progress);
+        * MathUtils.lerp(1.08, narrow ? 1.12 : 1.14, progress);
       const nearDepth = bounds.max.z - projectedOrigin.z;
       const distance = vertical / Math.tan(MathUtils.degToRad(camera.fov / 2)) + nearDepth * .65;
       camera.position.copy(target.applyMatrix4(worldAxes)).addScaledVector(cameraDirection, distance);
