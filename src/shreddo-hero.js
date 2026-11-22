@@ -15,7 +15,7 @@ async function enableModel() {
   if (motion.matches) return;
 
   try {
-    const { mountShreddo } = await import('../assets/shreddo-hero/viewer.js?v=csp');
+    const { mountShreddo } = await import('../assets/shreddo-hero/viewer.js?v=perspective');
     if (request.signal.aborted) return;
     const release = await mountShreddo({ section, stage, media, header, signal: request.signal });
     if (!request.signal.aborted) dispose = release;

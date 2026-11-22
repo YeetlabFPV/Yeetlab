@@ -78,7 +78,7 @@ function createCard(name, thumbnail, onSelect) {
 
 for (const preset of heroPresets) {
   const name = preset[0];
-  const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp';
+  const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp?v=twill';
   const card = createCard(name, thumbnail, radio => {
     selectCard(radio);
     applyPreset(preset);
@@ -275,7 +275,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=csp');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=twill');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(heroPresets[0]);

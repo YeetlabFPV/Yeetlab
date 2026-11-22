@@ -1,6 +1,6 @@
 import {
   AmbientLight, Box3, CanvasTexture, Color, DirectionalLight, EdgesGeometry, Group, HemisphereLight,
-  LineBasicMaterial, LineSegments, LinearMipmapLinearFilter, OrthographicCamera, RepeatWrapping, PCFSoftShadowMap, Scene,
+  LineBasicMaterial, LineSegments, LinearMipmapLinearFilter, PerspectiveCamera, RepeatWrapping, PCFSoftShadowMap, Scene,
   Spherical, Vector3, WebGLRenderer, MathUtils, NeutralToneMapping,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -71,7 +71,7 @@ function carbonWeave(renderer) {
       const across = over ? x : y;
       const curve = Math.sin(Math.PI * ((across % 16) + .5) / 16);
       const filaments = Math.cos(across * Math.PI / 2);
-      const shade = 177 + 57 * curve + 5 * filaments + (over ? 10 : 0);
+      const shade = 77 + 108 * curve + 12 * filaments + (over ? 42 : 0);
       image.data.set([shade, shade, shade, 255], (y * 64 + x) * 4);
     }
   }
@@ -131,8 +131,9 @@ function styleSurface(mesh, weave) {
 
   if (carbon) {
     surface.map = weave;
-    surface.color.set('#343641');
-    surface.roughness = .64;
+    surface.color.set('#515155');
+    surface.roughnessMap = weave;
+    surface.roughness = .78;
   } else {
     surface.roughness = .6;
     surface.onBeforeCompile = addPrintLayers;
@@ -197,8 +198,9 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
   renderer.domElement.setAttribute('aria-hidden', 'true');
 
   const scene = new Scene();
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1, 2000);
+  const camera = new PerspectiveCamera(25, 1, 1, 4000);
   const cameraPosition = new Vector3(-325, 245, 405);
+  const cameraDirection = cameraPosition.clone().normalize();
   camera.position.copy(cameraPosition);
   camera.lookAt(0, 0, 0);
   camera.updateMatrixWorld();
@@ -307,16 +309,15 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
 
       bounds.getCenter(target);
       target.z = 0;
-      camera.position.copy(cameraPosition).add(target.applyMatrix4(worldAxes));
       const halfWidth = (bounds.max.x - bounds.min.x) / 2;
       const halfHeight = (bounds.max.y - bounds.min.y) / 2;
       const actualAspect = width / height;
       const vertical = Math.max(halfWidth / aspect, halfHeight, halfWidth / actualAspect)
         * MathUtils.lerp(1.08, narrow ? 1.19 : 1.14, progress);
-      camera.left = -vertical * actualAspect;
-      camera.right = vertical * actualAspect;
-      camera.top = vertical;
-      camera.bottom = -vertical;
+      const nearDepth = bounds.max.z - projectedOrigin.z;
+      const distance = vertical / Math.tan(MathUtils.degToRad(camera.fov / 2)) + nearDepth * .65;
+      camera.position.copy(target.applyMatrix4(worldAxes)).addScaledVector(cameraDirection, distance);
+      camera.aspect = actualAspect;
       camera.updateProjectionMatrix();
       const elapsed = performance.now() - colorStarted;
       const slot = Math.floor(elapsed / colorPeriod) % filamentPalettes.length;
@@ -416,7 +417,7 @@ export async function createStudioViewer(viewport) {
     return replacements;
   }
 
-  const camera = new OrthographicCamera(-1, 1, 1, -1, 1, 1800);
+  const camera = new PerspectiveCamera(25, 1, 1, 4000);
   camera.position.set(-325, 265, 405);
   const canvas = renderer.domElement;
   canvas.tabIndex = 0;
@@ -424,8 +425,9 @@ export async function createStudioViewer(viewport) {
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 16, 0);
   controls.enablePan = false;
-  controls.minZoom = .65;
-  controls.maxZoom = 3;
+  const initialDistance = camera.position.distanceTo(controls.target);
+  controls.minDistance = 160;
+  controls.maxDistance = 1000;
   controls.update();
   controls.saveState();
   const draw = () => renderer.render(scene, camera);
@@ -448,10 +450,8 @@ export async function createStudioViewer(viewport) {
     const height = viewport.clientHeight;
     const aspect = width / height;
     const halfHeight = Math.max(96, 128 / aspect);
-    camera.left = -halfHeight * aspect;
-    camera.right = halfHeight * aspect;
-    camera.top = halfHeight;
-    camera.bottom = -halfHeight;
+    camera.aspect = aspect;
+    camera.fov = MathUtils.radToDeg(2 * Math.atan(halfHeight / initialDistance));
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2, 1700 / width));
     renderer.setSize(width, height, false);
