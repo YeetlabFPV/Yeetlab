@@ -25,7 +25,6 @@ const modelUrl = new URL('./shreddo.glb', import.meta.url);
 const paletteFromPreset = ([, first, second]) => [new Color(first), new Color(second)];
 const defaultPalette = paletteFromPreset(heroPresets[0]);
 const filamentZone = Object.fromEntries(studioParts.flatMap(part => part.groups.map(group => [group, part.zone])));
-filamentZone.softLock = 1;
 const colorPeriod = 3500;
 const firstColorPeriod = 2300;
 const fadeDuration = 540;
@@ -404,8 +403,6 @@ export async function createStudioViewer(viewport) {
         if (!materials.has(part.id)) materials.set(part.id, mesh.material.clone());
         mesh.material = materials.get(part.id);
         mesh.material.color.copy(defaultPalette[part.zone]);
-      } else if (node.userData.group === 'softLock') {
-        mesh.material.color.copy(defaultPalette[1]);
       }
       styleSurface(mesh, weave);
     });

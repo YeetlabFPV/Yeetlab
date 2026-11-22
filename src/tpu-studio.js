@@ -334,7 +334,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=raised-framing');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=canopy-lock');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);

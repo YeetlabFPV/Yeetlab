@@ -11,7 +11,7 @@ export const heroPresets = [
 export const studioParts = [
   { id: 'horn', name: 'LiPo Saver Horns', groups: ['horn'], zone: 0 },
   { id: 'plates', name: 'Cam Plates', groups: ['cameraSide'], zone: 1 },
-  { id: 'canopy', name: 'Canopy', groups: ['cage'], zone: 0 },
+  { id: 'canopy', name: 'Canopy', groups: ['cage', 'softLock'], zone: 0 },
   { id: 'shoes', name: 'Bando Shoes', groups: ['guard'], zone: 1 },
   { id: 'protectors', name: 'Arm Protectors', groups: ['armProtector'], zone: 1 },
   { id: 'holder', name: 'Buzzer & Cap Holder', groups: ['bumper'], zone: 1 },
