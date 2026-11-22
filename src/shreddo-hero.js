@@ -15,7 +15,7 @@ async function enableModel() {
   if (motion.matches) return;
 
   try {
-    const { mountShreddo } = await import('../assets/shreddo-hero/viewer.js?v=shop-anchor');
+    const { mountShreddo } = await import('../assets/shreddo-hero/viewer.js?v=colour-transitions');
     if (request.signal.aborted) return;
     const release = await mountShreddo({ section, stage, media, header, signal: request.signal });
     if (!request.signal.aborted) dispose = release;
@@ -48,3 +48,16 @@ new ResizeObserver(syncHeaderHeight).observe(header);
 syncHeaderHeight();
 motion.addEventListener('change', enableModel);
 enableModel();
+
+if (!motion.matches && 'IntersectionObserver' in window) {
+  const reveal = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      reveal.unobserve(entry.target);
+      if (!motion.matches) entry.target.classList.add('home-reveal');
+    }
+  }, { rootMargin: '0px 0px -24px 0px' });
+  document.querySelectorAll('main > section:not(.shreddo-hero)').forEach(element => {
+    if (element.getBoundingClientRect().top >= innerHeight) reveal.observe(element);
+  });
+}

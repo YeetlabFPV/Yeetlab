@@ -6,6 +6,7 @@ import {
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { heroPresets, studioParts, studioAccessories } from './shreddo-colours.js';
+import { nextRandomPreset } from './studio-random.js';
 import { MeshoptDecoder as wasmDecoder } from 'meshoptimizer/decoder';
 import { MeshoptDecoder as jsDecoder } from './vendor/meshopt_decoder_reference.js';
 
@@ -21,11 +22,13 @@ try {
 
 const modelUrl = new URL('./shreddo.glb', import.meta.url);
 // The rear braces echo the canopy colour. The camera inserts echo the shoes.
-const filamentPalettes = heroPresets.map(([, first, second]) => [new Color(first), new Color(second)]);
+const paletteFromPreset = ([, first, second]) => [new Color(first), new Color(second)];
+const defaultPalette = paletteFromPreset(heroPresets[0]);
 const filamentZone = Object.fromEntries(studioParts.flatMap(part => part.groups.map(group => [group, part.zone])));
 filamentZone.softLock = 1;
 const colorPeriod = 3500;
-const fadeDuration = 320;
+const firstColorPeriod = 2300;
+const fadeDuration = 540;
 const aspect = 4 / 3;
 const clamp = (value) => MathUtils.clamp(value, 0, 1);
 
@@ -234,6 +237,7 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
     section.classList.remove('has-shreddo-model');
     section.removeAttribute('data-exploded');
     stage.style.removeProperty('--explosion-focus');
+    media.style.removeProperty('--colour-glow');
     copy.inert = false;
     modelRoot.traverse((mesh) => {
       if (!mesh.isMesh && !mesh.isLineSegments) return;
@@ -262,13 +266,16 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
         if (mesh.material?.name !== 'Violet TPU') return;
         tpuMaterials[zone] ??= zone === 0 ? mesh.material : mesh.material.clone();
         mesh.material = tpuMaterials[zone];
-        mesh.material.color.copy(filamentPalettes[0][zone]);
+        mesh.material.color.copy(defaultPalette[zone]);
       });
     }
     const parts = measureParts(model, camera, weave);
     if (parts.length !== 69) throw new Error('Incomplete Shreddo assembly');
 
-    const colorStarted = performance.now();
+    let colorStarted;
+    let period = firstColorPeriod;
+    let palette = defaultPalette;
+    let nextPalette = paletteFromPreset(nextRandomPreset().preset);
     const bounds = new Box3();
     const offset = new Vector3();
     const projectedOffset = new Vector3();
@@ -333,17 +340,24 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
       camera.position.copy(target.applyMatrix4(worldAxes)).addScaledVector(cameraDirection, distance);
       camera.aspect = actualAspect;
       camera.updateProjectionMatrix();
-      const elapsed = performance.now() - colorStarted;
-      const slot = Math.floor(elapsed / colorPeriod) % filamentPalettes.length;
-      const phase = elapsed % colorPeriod;
-      const blend = MathUtils.smoothstep(phase, colorPeriod - fadeDuration, colorPeriod);
-      const next = (slot + 1) % filamentPalettes.length;
+      const now = performance.now();
+      colorStarted ??= now;
+      let phase = now - colorStarted;
+      if (phase >= period) {
+        palette = nextPalette;
+        nextPalette = paletteFromPreset(nextRandomPreset().preset);
+        colorStarted = now;
+        period = colorPeriod;
+        phase = 0;
+      }
+      const blend = MathUtils.smoothstep(phase, period - fadeDuration, period);
+      media.style.setProperty('--colour-glow', 1 + .12 * Math.sin(blend * Math.PI));
       tpuMaterials.forEach((material, zone) => {
-        material.color.lerpColors(filamentPalettes[slot][zone], filamentPalettes[next][zone], blend);
+        material.color.lerpColors(palette[zone], nextPalette[zone], blend);
       });
       renderer.render(scene, camera);
-      if (phase >= colorPeriod - fadeDuration) schedule();
-      else colorTimer = setTimeout(schedule, colorPeriod - fadeDuration - phase);
+      if (phase >= period - fadeDuration) schedule();
+      else colorTimer = setTimeout(schedule, period - fadeDuration - phase);
     };
 
     const checkout = document.querySelector('#checkout:target');
@@ -389,9 +403,9 @@ export async function createStudioViewer(viewport) {
       if (part) {
         if (!materials.has(part.id)) materials.set(part.id, mesh.material.clone());
         mesh.material = materials.get(part.id);
-        mesh.material.color.copy(filamentPalettes[0][part.zone]);
+        mesh.material.color.copy(defaultPalette[part.zone]);
       } else if (node.userData.group === 'softLock') {
-        mesh.material.color.copy(filamentPalettes[0][1]);
+        mesh.material.color.copy(defaultPalette[1]);
       }
       styleSurface(mesh, weave);
     });
@@ -520,12 +534,12 @@ export async function createStudioViewer(viewport) {
   }
 
   const camera = new PerspectiveCamera(25, 1, 1, 4000);
-  camera.position.set(-325, 265, 405);
+  camera.position.set(-238, 179, 296);
   const canvas = renderer.domElement;
   canvas.tabIndex = 0;
   canvas.setAttribute('aria-label', 'Shreddo 5 model. Drag or use the arrow keys to rotate.');
   const controls = new OrbitControls(camera, canvas);
-  controls.target.set(0, 16, 0);
+  controls.target.set(0, -3, 0);
   controls.enablePan = false;
   const initialDistance = camera.position.distanceTo(controls.target);
   controls.minDistance = 160;
@@ -589,7 +603,7 @@ export async function createStudioViewer(viewport) {
     const width = viewport.clientWidth;
     const height = viewport.clientHeight;
     const aspect = width / height;
-    const halfWidth = flightHardware.get('props')?.visible ? 154 : 128;
+    const halfWidth = flightHardware.get('props')?.visible ? 195 : 138;
     const halfHeight = Math.max(96, halfWidth / aspect);
     camera.aspect = aspect;
     camera.fov = MathUtils.radToDeg(2 * Math.atan(halfHeight / initialDistance));
