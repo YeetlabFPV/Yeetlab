@@ -1,6 +1,6 @@
 import {
-  AmbientLight, Box3, CanvasTexture, Color, DirectionalLight, EdgesGeometry, Group, HemisphereLight,
-  LineBasicMaterial, LineSegments, LinearMipmapLinearFilter, PerspectiveCamera, RepeatWrapping, PCFSoftShadowMap, Scene,
+  AmbientLight, Box3, CanvasTexture, CircleGeometry, Color, DirectionalLight, DoubleSide, EdgesGeometry, Group, HemisphereLight,
+  LineBasicMaterial, LineSegments, LinearMipmapLinearFilter, Mesh, MeshBasicMaterial, PerspectiveCamera, RepeatWrapping, PCFSoftShadowMap, Scene,
   Spherical, Vector3, WebGLRenderer, MathUtils, NeutralToneMapping,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -471,6 +471,28 @@ export async function createStudioViewer(viewport) {
     }
 
     if (fastener) {
+      const blades = new Group();
+      blades.name = 'prop-blades';
+      blades.add(...part.children.slice());
+
+      const textureCanvas = document.createElement('canvas');
+      textureCanvas.width = textureCanvas.height = 128;
+      const ctx = textureCanvas.getContext('2d');
+      const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      for (const [radius, opacity] of [[0, .76], [.10, .70], [.17, .17], [.55, .28], [.85, .34], [.96, .16], [1, 0]]) {
+        gradient.addColorStop(radius, `rgba(255,255,255,${opacity})`);
+      }
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 128, 128);
+      const blur = new Mesh(
+        new CircleGeometry(.066, 48).rotateX(-Math.PI / 2),
+        new MeshBasicMaterial({map: new CanvasTexture(textureCanvas), transparent: true, depthWrite: false, side: DoubleSide}),
+      );
+      blur.name = 'prop-motion-blur';
+      blur.material.color = accessoryColours.get('props');
+      blur.visible = false;
+      part.add(blades, blur);
+
       const nut = fastener.scene;
       nut.traverse(mesh => {
         if (mesh.isMesh && mesh.material.name === 'Blau eloxiertes Aluminium') {
@@ -514,6 +536,14 @@ export async function createStudioViewer(viewport) {
   let spinFrame = 0;
   let motorAngle = 0;
 
+  function updatePropExposure() {
+    const props = flightHardware.get('props');
+    for (const prop of props?.children ?? []) {
+      prop.getObjectByName('prop-blades').visible = !spinFrame;
+      prop.getObjectByName('prop-motion-blur').visible = Boolean(spinFrame);
+    }
+  }
+
   function setMotorSpin(enabled) {
     cancelAnimationFrame(spinFrame);
     spinFrame = 0;
@@ -524,7 +554,7 @@ export async function createStudioViewer(viewport) {
       let started;
       function spin(now) {
         started ??= now;
-        const previewRpm = 120;
+        const previewRpm = 10000;
         motorAngle = (initialAngle + (now - started) * previewRpm / 60000 * 2 * Math.PI) % (2 * Math.PI);
         const props = flightHardware.get('props');
         motorMounts.forEach(([x, z], index) => {
@@ -537,6 +567,7 @@ export async function createStudioViewer(viewport) {
       }
       spinFrame = requestAnimationFrame(spin);
     }
+    updatePropExposure();
     draw();
   }
 
@@ -605,6 +636,7 @@ export async function createStudioViewer(viewport) {
       }
       for (const [id, assembly] of flightHardware) assembly.visible = Boolean(configuration[id]);
       if (!configuration.motors && spinFrame) setMotorSpin(false);
+      updatePropExposure();
       resize();
     },
     captureView() {
