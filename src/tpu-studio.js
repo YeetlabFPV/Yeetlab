@@ -1,4 +1,4 @@
-import { heroPresets, studioParts, studioAccessories } from './shreddo-colours.js';
+import { heroPresets, studioParts, studioAccessories } from './shreddo-colours.js?v=studio-accessories';
 
 import { nextRandomPreset } from './studio-random.js';
 
