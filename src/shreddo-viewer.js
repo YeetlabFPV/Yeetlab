@@ -483,6 +483,26 @@ export async function createStudioViewer(viewport) {
   controls.update();
   controls.saveState();
   const draw = () => renderer.render(scene, camera);
+  let propFrame = 0;
+  function setPropSpin(enabled) {
+    cancelAnimationFrame(propFrame);
+    propFrame = 0;
+    const props = flightHardware.get('props');
+    if (!enabled || !props?.visible) return;
+    let started;
+    const initialAngles = props.children.map(prop => prop.rotation.y);
+    function spin(now) {
+      started ??= now;
+      const angle = ((now - started) * 10000 / 60000 % 1) * 2 * Math.PI;
+      props.children.forEach((prop, index) => {
+        prop.rotation.y = initialAngles[index] + (prop.scale.x < 0 ? angle : -angle);
+      });
+      draw();
+      propFrame = requestAnimationFrame(spin);
+    }
+    propFrame = requestAnimationFrame(spin);
+  }
+
   controls.addEventListener('change', draw);
   canvas.addEventListener('keydown', event => {
     const step = Math.PI / 12;
@@ -514,6 +534,7 @@ export async function createStudioViewer(viewport) {
   new ResizeObserver(resize).observe(viewport);
   resize();
   return {
+    setPropSpin,
     setColours(colours) {
       for (const [id, colour] of Object.entries(colours)) {
         (accessoryColours.get(id) ?? materials.get(id).color).set(colour);
@@ -546,6 +567,7 @@ export async function createStudioViewer(viewport) {
         }
       }
       for (const [id, assembly] of flightHardware) assembly.visible = Boolean(configuration[id]);
+      if (!configuration.props) setPropSpin(false);
       resize();
     },
     captureView() {

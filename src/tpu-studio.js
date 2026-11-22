@@ -32,6 +32,20 @@ const emptyCollection = document.querySelector('#collection-empty');
 const addDesign = document.querySelector('#add-to-collection');
 const previewAdd = document.querySelector('#preview-add');
 let activeCard;
+const collectionKey = 'yeetlab.tpuStudio.collection.v1';
+let savedCollection = { designs: [], defaultRemoved: false, count: 0 };
+try {
+  const saved = JSON.parse(localStorage.getItem(collectionKey));
+  if (Array.isArray(saved?.designs)) savedCollection = saved;
+} catch { /* Collection can still be used in memory. */ }
+
+function persistCollection() {
+  try {
+    localStorage.setItem(collectionKey, JSON.stringify(savedCollection));
+  } catch {
+    hardwareStatus.textContent = 'Browser storage is full or unavailable. Recent collection changes may only last for this session.';
+  }
+}
 
 function selectCard(radio) {
   if (activeCard) activeCard.checked = false;
@@ -39,7 +53,7 @@ function selectCard(radio) {
   if (radio) radio.checked = true;
 }
 
-function createCard(name, thumbnail, onSelect) {
+function createCard(name, thumbnail, onSelect, onRemove) {
   const card = document.createElement('div');
   card.className = 'collection-item';
   const label = document.createElement('label');
@@ -69,6 +83,7 @@ function createCard(name, thumbnail, onSelect) {
     const neighbour = card.nextElementSibling || card.previousElementSibling;
     if (radio === activeCard) selectCard(null);
     card.remove();
+    onRemove();
     emptyCollection.hidden = Boolean(collection.childElementCount);
     (neighbour?.querySelector('input') || addDesign).focus();
   });
@@ -76,13 +91,16 @@ function createCard(name, thumbnail, onSelect) {
   return card;
 }
 
-{
+if (!savedCollection.defaultRemoved) {
   const preset = defaultPreset;
   const name = preset[0];
   const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp?v=twill';
   const card = createCard(name, thumbnail, radio => {
     selectCard(radio);
     applyPreset(preset);
+  }, () => {
+    savedCollection.defaultRemoved = true;
+    persistCollection();
   });
   collection.append(card);
   selectCard(card.querySelector('input'));
@@ -158,7 +176,8 @@ for (const part of [...studioParts, ...studioAccessories]) {
   body.append(picker, save, savedSection);
   details.append(summary, body);
   document.querySelector('#part-colours').append(details);
-  fields.set(part.id, {name: part.name, title: name, input, chip, value, save, list, savedSection});
+  details.hidden = Boolean(part.colour);
+  fields.set(part.id, {details, name: part.name, title: name, input, chip, value, save, list, savedSection});
   input.addEventListener('input', () => setPartColour(part.id, input.value));
   save.addEventListener('click', () => {
     if (!savedColours.includes(input.value)) savedColours.push(input.value);
@@ -183,11 +202,17 @@ const editor = document.querySelector('#editor');
 const hardwareGroups = [...document.querySelectorAll('fieldset[data-slot]')];
 const accessoryToggles = [...document.querySelectorAll('[data-accessory]')];
 let hardware = {horn: false, shoes: false, motors: false, props: false};
-let designCount = 0;
+const spinProps = document.querySelector('#spin-props');
 let contextLost = false;
 
 function showHardware() {
-  for (const toggle of accessoryToggles) toggle.checked = hardware[toggle.dataset.accessory];
+  for (const toggle of accessoryToggles) {
+    const id = toggle.dataset.accessory;
+    toggle.checked = Boolean(hardware[id]);
+    fields.get(id).details.hidden = !toggle.checked;
+  }
+  spinProps.hidden = !hardware.props;
+  if (spinProps.hidden) spinProps.setAttribute('aria-pressed', 'false');
   for (const group of hardwareGroups) {
     const slot = group.dataset.slot;
     const option = group.querySelector(hardware[slot] ? '[value="alternative"]' : '[value="stock"]');
@@ -242,20 +267,40 @@ for (const toggle of accessoryToggles) {
   });
 }
 
+spinProps.addEventListener('click', () => {
+  const spinning = spinProps.getAttribute('aria-pressed') !== 'true';
+  viewer.setPropSpin(spinning);
+  spinProps.setAttribute('aria-pressed', String(spinning));
+});
+
+function savedDesignCard(design) {
+  const card = createCard(design.name, design.view.image,
+    radio => switchBuild(design.hardware, design, radio),
+    () => {
+      savedCollection.designs = savedCollection.designs.filter(saved => saved !== design);
+      persistCollection();
+    });
+  card.querySelector('input').setAttribute('data-saved-build', '');
+  return card;
+}
+
+for (const design of [...savedCollection.designs].reverse()) collection.prepend(savedDesignCard(design));
+emptyCollection.hidden = Boolean(collection.childElementCount);
+
 function addCurrentDesign() {
   const design = {
+    name: randomColourway ?? 'Design ' + ++savedCollection.count,
     hardware: {...hardware},
     randomColourway,
     colours: Object.fromEntries([...fields].map(([id, field]) => [id, field.input.value])),
     view: viewer.captureView(),
   };
-  const name = randomColourway ?? 'Design ' + ++designCount;
-  const card = createCard(name, design.view.image, radio => switchBuild(design.hardware, design, radio));
+  savedCollection.designs.unshift(design);
+  persistCollection();
+  const card = savedDesignCard(design);
   collection.prepend(card);
-  const radio = card.querySelector('input');
-  radio.setAttribute('data-saved-build', '');
-  selectCard(radio);
-  presetName.textContent = name;
+  selectCard(card.querySelector('input'));
+  presetName.textContent = design.name;
   emptyCollection.hidden = true;
 }
 
@@ -283,12 +328,13 @@ new ResizeObserver(() => {
 function unavailable() {
   contextLost = true;
   editor.disabled = previewAdd.disabled = randomPreset.disabled = reset.disabled = true;
+  viewer?.setPropSpin(false);
   viewport.querySelector('canvas')?.remove();
   status.textContent = '3D preview unavailable. Reload with WebGL enabled to customise the frame.';
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=accessories');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=spin-collection');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);

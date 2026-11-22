@@ -160,3 +160,16 @@
   font-size: .875rem;
 }
 .flight-hardware input { accent-color: var(--purple); }
+
+.prop-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+#spin-props {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #27212f;
+  color: var(--ink);
+  font: inherit;
+  font-size: .75rem;
+  cursor: pointer;
+}
+#spin-props[aria-pressed="true"] { border-color: #be77f4; background: #372740; }
