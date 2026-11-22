@@ -411,15 +411,15 @@ h3 {
 
 .specs-section {
   display: grid;
-  grid-template-columns: minmax(0, 0.74fr) minmax(0, 1.26fr);
-  gap: clamp(28px, 5vw, 70px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 40px);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
 
 .spec-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -432,15 +432,28 @@ h3 {
 }
 
 .spec-grid article {
-  min-height: 220px;
-  padding: 24px;
+  overflow: hidden;
+  padding-bottom: 20px;
 }
 
-.spec-grid span {
-  display: inline-block;
-  margin-bottom: 26px;
-  color: var(--yellow);
-  font-weight: 900;
+.spec-grid img {
+  width: 100%;
+  height: auto;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 18px, #b1a8d01c 18px 19px),
+    repeating-linear-gradient(60deg, transparent 0 18px, #b1a8d01c 18px 19px),
+    repeating-linear-gradient(-60deg, transparent 0 18px, #b1a8d01c 18px 19px),
+    radial-gradient(ellipse at 50% 45%, #5a586b, #262630 85%);
+}
+
+.spec-grid h3 {
+  margin: 18px 18px 8px;
+}
+
+.spec-grid p {
+  margin: 0 18px;
 }
 
 .spec-list-section {
@@ -568,22 +581,17 @@ h3 {
 }
 
 .parts-visual {
+  margin: 0;
   overflow: hidden;
-  padding: clamp(16px, 3vw, 26px);
   border: 1px solid var(--line);
   border-radius: 8px;
-  background:
-    radial-gradient(circle at 70% 18%, rgba(143, 51, 214, 0.24), transparent 34%),
-    rgba(255, 255, 255, 0.04);
+  background: #35343b;
   box-shadow: var(--shadow);
 }
 
 .parts-visual img {
-  display: block;
   width: 100%;
-  max-height: 360px;
-  object-fit: contain;
-  filter: drop-shadow(0 24px 34px rgba(143, 51, 214, 0.2));
+  height: auto;
 }
 
 .parts-content {
@@ -1177,6 +1185,10 @@ legend {
 }
 
 @media (max-width: 900px) {
+  .spec-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .hero,
   .specs-section,
   .box-section,

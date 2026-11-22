@@ -1,5 +1,23 @@
 [
   {
+    "src": "assets/shreddo-5-front-concrete.jpeg",
+    "thumb": "assets/community/web/frame-front-concrete-thumb.jpg",
+    "alt": "Front view of the Shreddo 5 camera cage",
+    "featured": true
+  },
+  {
+    "src": "assets/shreddo-5-top.jpeg",
+    "thumb": "assets/community/web/frame-top-thumb.jpg",
+    "alt": "Shreddo 5 frame from above",
+    "featured": true
+  },
+  {
+    "src": "assets/shreddo-5-side.jpeg",
+    "thumb": "assets/community/web/frame-side-thumb.jpg",
+    "alt": "Side view of the Shreddo 5 frame",
+    "featured": true
+  },
+  {
     "src": "assets/community/web/community-01-2cd9f75372-masonry.jpg",
     "thumb": "assets/community/web/community-01-2cd9f75372-masonry-thumb.jpg",
     "alt": "Community Shreddo 5 build"

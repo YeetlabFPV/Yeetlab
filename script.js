@@ -7,8 +7,6 @@ const shippingElement = document.querySelector("#order-shipping");
 const totalElement = document.querySelector("#order-total");
 const checkoutButton = document.querySelector("#checkout-button");
 const itemInputs = [...document.querySelectorAll('input[name="item"]')];
-const galleryMain = document.querySelector("#gallery-main");
-const galleryButtons = [...document.querySelectorAll("[data-gallery-src]")];
 const communitySection = document.querySelector(".community-section");
 const communityGrid = document.querySelector("#community-grid");
 let communityTiles = [];
@@ -124,15 +122,6 @@ itemInputs.forEach((input) => {
   input.addEventListener("change", updateTotal);
 });
 
-galleryButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    galleryButtons.forEach((item) => item.classList.remove("is-active"));
-    button.classList.add("is-active");
-    galleryMain.src = button.dataset.gallerySrc;
-    galleryMain.alt = button.dataset.galleryAlt;
-  });
-});
-
 function openCommunityLightbox(index) {
   if (!communityTiles[index]) {
     return;
@@ -140,6 +129,7 @@ function openCommunityLightbox(index) {
 
   activeCommunityIndex = index;
   communityLightboxImage.src = communityTiles[index].dataset.communitySrc;
+  communityLightboxImage.alt = communityTiles[index].querySelector("img").alt;
   communityLightbox.classList.add("is-open");
   communityLightbox.setAttribute("aria-hidden", "false");
 }
@@ -201,7 +191,11 @@ async function loadCommunityGallery() {
       throw new Error("Community gallery could not be loaded.");
     }
 
-    const images = shuffledImages(await response.json());
+    const entries = await response.json();
+    const images = [
+      ...entries.filter(image => image.featured),
+      ...shuffledImages(entries.filter(image => !image.featured)),
+    ];
 
     communityGrid.innerHTML = "";
     images.forEach((image, index) => {

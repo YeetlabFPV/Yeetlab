@@ -40,7 +40,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     >
-    <link rel="stylesheet" href="styles.css?v=20260806-credit">
+    <link rel="stylesheet" href="styles.css?v=cad-specs">
+    <link rel="stylesheet" href="src/shreddo-hero.css?v=violet-glow">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -87,72 +88,42 @@
         <a href="#frame">Frame</a>
         <a href="#specs">Specs</a>
         <a href="#parts">Parts</a>
+        <a href="tpu-studio.html">TPU Studio</a>
         <a href="build-guide.html">Guide</a>
         <a href="#checkout">Shop</a>
       </nav>
     </header>
 
     <main id="top">
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Shreddo 5 / FPV freestyle frame</p>
-          <h1>Shreddo 5 FPV freestyle frame</h1>
-          <p>
-            Alien-sauce durability for pilots who hit concrete for fun. The
-            Shreddo 5 is built as your last 5-inch freestyle frame: brutally
-            tough, versatile to build, and born for hard bando sessions.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#checkout">Build your order</a>
-            <a class="button ghost" href="#specs">See specs</a>
+      <section class="shreddo-hero" id="frame">
+        <div class="shreddo-stage">
+          <div class="hero-copy">
+            <p class="eyebrow">Shreddo 5 / FPV freestyle frame</p>
+            <h1>Shreddo 5 FPV freestyle frame</h1>
+            <p>
+              Alien-sauce durability for pilots who hit concrete for fun. The
+              Shreddo 5 is built as your last 5-inch freestyle frame: brutally
+              tough, versatile to build, and born for hard bando sessions.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#checkout">Build your order</a>
+              <a class="button ghost" href="#specs">See specs</a>
+            </div>
           </div>
-        </div>
-        <div class="hero-media">
-          <video
-            class="hero-product"
-            autoplay
-            muted
-            loop
-            playsinline
-            poster="assets/shreddo-5-assembled-rocks.jpeg"
-            aria-label="Shreddo 5 FPV frame on rocks"
-          >
-            <source src="assets/shreddo-5-hero.mp4" type="video/mp4">
-            <img
-              src="assets/shreddo-5-assembled-rocks.jpeg"
-              alt="Shreddo 5 FPV frame on rocks"
-            >
-          </video>
-        </div>
-      </section>
-
-      <section class="product-band" id="frame">
-        <div class="section-heading">
-          <p class="eyebrow">Current frame</p>
-          <h2>Shreddo 5</h2>
-          <p>
-            Unmatched durability, smart carbon thickness, and a TPU camera cage
-            that lets you fit almost any FPV camera without turning the front
-            end into a compromise.
-          </p>
-        </div>
-        <div class="product-gallery" aria-label="Shreddo 5 image gallery">
-          <img
-            class="gallery-main"
-            id="gallery-main"
-            src="assets/shreddo-5-front-concrete.jpeg"
-            alt="Front camera cage view of the Shreddo 5 FPV frame on concrete"
-          >
-          <div class="gallery-thumbs" aria-label="Choose product image">
-            <button class="thumb is-active" type="button" data-gallery-src="assets/shreddo-5-front-concrete.jpeg" data-gallery-alt="Front camera cage view of the Shreddo 5 FPV frame on concrete">
-              <img src="assets/shreddo-5-front-concrete.jpeg" alt="">
-            </button>
-            <button class="thumb" type="button" data-gallery-src="assets/shreddo-5-top.jpeg" data-gallery-alt="Top view of the Shreddo 5 FPV frame">
-              <img src="assets/shreddo-5-top.jpeg" alt="">
-            </button>
-            <button class="thumb" type="button" data-gallery-src="assets/shreddo-5-side.jpeg" data-gallery-alt="Side view of the Shreddo 5 FPV frame">
-              <img src="assets/shreddo-5-side.jpeg" alt="">
-            </button>
+          <div class="shreddo-visual">
+            <div class="shreddo-media">
+              <picture>
+                <source media="(max-width: 620px)"
+                  srcset="assets/shreddo-hero/assembled-mobile.webp 1x, assets/shreddo-hero/assembled-mobile-2x.webp 2x">
+                <img src="assets/shreddo-hero/assembled.webp" width="1280" height="960"
+                  alt="Assembled Shreddo 5 carbon frame with a violet TPU canopy and graphite motor guards"
+                  fetchpriority="high">
+              </picture>
+            </div>
+            <p class="shreddo-scroll-hint" aria-hidden="true">
+              <span data-assembled>Scroll to take it apart <span data-arrow>↓</span></span>
+              <span data-open>Scroll up to reassemble <span data-arrow>↑</span></span>
+            </p>
           </div>
         </div>
       </section>
@@ -164,36 +135,24 @@
         </div>
         <div class="spec-grid">
           <article>
-            <span>01</span>
+            <img src="assets/parts/carbon-arm.webp" alt="" width="640" height="320" loading="lazy" decoding="async">
             <h3>6 mm arms</h3>
-            <p>
-              Reinforced around the body where the impact loads concentrate,
-              while keeping the outer arm shape clean and purposeful.
-            </p>
+            <p>Each arm widens at the root, where the arm lock holds it in the frame.</p>
           </article>
           <article>
-            <span>02</span>
+            <img src="assets/parts/carbon-bottom.webp" alt="" width="640" height="320" loading="lazy" decoding="async">
             <h3>3 mm bottom plate</h3>
-            <p>
-              Built to handle hard frontal impacts and keep the core protected
-              when the line gets spicy.
-            </p>
+            <p>The bottom plate ties the arm roots together and extends forward beneath the camera cage.</p>
           </article>
           <article>
-            <span>03</span>
-            <h3>2 mm top and mid plate</h3>
-            <p>
-              Tight, serviceable, and stiff without adding dead weight where it
-              does not help.
-            </p>
+            <img src="assets/parts/carbon-deck.webp" alt="" width="640" height="320" loading="lazy" decoding="async">
+            <h3>2 mm top and mid plates</h3>
+            <p>The slotted top plate carries the battery. Beneath it, the mid plate clamps the arms against the bottom plate.</p>
           </article>
           <article>
-            <span>04</span>
+            <img src="assets/parts/camera-cage.webp" alt="" width="640" height="320" loading="lazy" decoding="async">
             <h3>TPU camera cage</h3>
-            <p>
-              Interchangeable camera-side plates make room for almost any FPV
-              cam you want to run.
-            </p>
+            <p>Swap the two printed side plates to fit your FPV camera. The cage takes cameras up to 20 mm wide.</p>
           </article>
         </div>
       </section>
@@ -313,9 +272,13 @@
       </section>
 
       <section class="parts-section" id="parts">
-        <div class="parts-visual" aria-hidden="true">
-          <img src="assets/parts/tpu-kit.png" alt="">
-        </div>
+        <figure class="parts-visual">
+          <img src="assets/parts/tpu-kit-cad.webp"
+            srcset="assets/parts/tpu-kit-cad-small.webp 780w, assets/parts/tpu-kit-cad.webp 1560w"
+            sizes="(max-width: 900px) 92vw, (max-width: 1220px) 48vw, 580px"
+            width="1560" height="960" loading="lazy" decoding="async"
+            alt="Violet Shreddo 5 TPU parts in their mounting positions, showing the twin horns, camera cage, four arm protectors, shoes and rear mounts.">
+        </figure>
         <div class="parts-content">
           <div>
             <p class="eyebrow">Print and repair</p>
@@ -341,7 +304,10 @@
                 </div>
               </details>
             </div>
-            <a class="text-link" href="assets/downloads/Shreddo5_TPU.zip" download>Download TPU files</a>
+            <div class="hero-actions">
+              <a class="button ghost" href="tpu-studio.html">Open TPU Studio</a>
+              <a class="button ghost" href="assets/downloads/Shreddo5_TPU.zip" download>Download TPU files</a>
+            </div>
           </div>
         </div>
       </section>
@@ -486,7 +452,7 @@
         </form>
       </section>
 
-      <section class="community-section" aria-labelledby="community-title">
+      <section id="gallery" class="community-section" aria-labelledby="community-title">
         <div class="section-heading">
           <p class="eyebrow">Community builds</p>
           <h2 id="community-title">Built by pilots</h2>
@@ -518,6 +484,7 @@
       </div>
     </footer>
 
+    <script type="module" src="src/shreddo-hero.js"></script>
     <script src="script.js?v=20261117-gallery-masonry-29"></script>
   </body>
 </html>

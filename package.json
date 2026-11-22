@@ -5,9 +5,13 @@
   "version": "1.0.0",
   "scripts": {
     "check": "wrangler deploy --dry-run",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "build:hero": "esbuild src/shreddo-viewer.js --bundle --minify --format=esm --outfile=assets/shreddo-hero/viewer.js"
   },
   "devDependencies": {
+    "esbuild": "0.28.1",
+    "meshoptimizer": "1.2.0",
+    "three": "0.180.0",
     "wrangler": "^4.114.0"
   }
 }
