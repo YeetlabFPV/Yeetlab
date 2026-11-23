@@ -94,7 +94,7 @@ function createCard(name, thumbnail, onSelect, onRemove) {
 if (!savedCollection.defaultRemoved) {
   const preset = defaultPreset;
   const name = preset[0];
-  const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp?v=twill';
+  const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp?v=cosmos-default';
   const card = createCard(name, thumbnail, radio => {
     selectCard(radio);
     applyPreset(preset);
@@ -201,7 +201,7 @@ const hardwareStatus = document.querySelector('#hardware-status');
 const editor = document.querySelector('#editor');
 const hardwareGroups = [...document.querySelectorAll('fieldset[data-slot]')];
 const accessoryToggles = [...document.querySelectorAll('[data-accessory]')];
-let hardware = {horn: false, shoes: false, motors: false, props: false};
+let hardware = {horn: 'cosmos', shoes: false, motors: false, props: false};
 const spinMotors = document.querySelector('#spin-motors');
 let contextLost = false;
 
@@ -215,7 +215,7 @@ function showHardware() {
   if (spinMotors.hidden) spinMotors.setAttribute('aria-pressed', 'false');
   for (const group of hardwareGroups) {
     const slot = group.dataset.slot;
-    const option = group.querySelector(hardware[slot] ? '[value="alternative"]' : '[value="stock"]');
+    const option = group.querySelector(hardware[slot] === 'cosmos' ? '[value="cosmos"]' : hardware[slot] ? '[value="alternative"]' : '[value="stock"]');
     option.checked = true;
     const field = fields.get(slot);
     field.name = option.parentElement.textContent.trim();
@@ -257,7 +257,8 @@ async function switchBuild(next, design, radio) {
 
 for (const group of hardwareGroups) {
   group.addEventListener('change', event => {
-    switchBuild({...hardware, [group.dataset.slot]: event.target.value === 'alternative'});
+    const {value} = event.target;
+    switchBuild({...hardware, [group.dataset.slot]: value === 'cosmos' ? value : value === 'alternative'});
   });
 }
 
@@ -334,7 +335,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=color-lab');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=cosmos-default');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);

@@ -20,7 +20,7 @@ try {
   // The production Content Security Policy can deny WebAssembly compilation.
 }
 
-const modelUrl = new URL('./shreddo.glb', import.meta.url);
+const modelUrl = new URL('./shreddo.glb?v=cosmos-default', import.meta.url);
 // The rear braces echo the canopy colour. The camera inserts echo the shoes.
 const paletteFromPreset = ([, first, second]) => [new Color(first), new Color(second)];
 const defaultPalette = paletteFromPreset(heroPresets[0]);
@@ -414,7 +414,7 @@ export async function createStudioViewer(viewport) {
   };
   let alternatives;
   async function loadAlternatives() {
-    const url = new URL('./studio-variants.glb', modelUrl);
+    const url = new URL('./studio-variants-og.glb', modelUrl);
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
     const { scene: variants } = await loader.loadAsync(url.href);
     const replacements = {};
@@ -423,7 +423,7 @@ export async function createStudioViewer(viewport) {
       const assembly = new Group();
       node.traverse(mesh => {
         if (!mesh.isMesh) return;
-        mesh.material = materials.get(slot);
+        mesh.material = materials.get(slot === 'og' ? 'horn' : slot);
         styleSurface(mesh, weave);
       });
       assembly.add(node);
@@ -440,8 +440,8 @@ export async function createStudioViewer(viewport) {
       assembly.visible = false;
       replacements[slot] = assembly;
     }
-    if (!replacements.horn || !replacements.shoes) throw new Error('Incomplete studio variants');
-    model.add(replacements.horn, replacements.shoes);
+    if (!replacements.horn || !replacements.shoes || !replacements.og) throw new Error('Incomplete studio variants');
+    model.add(...Object.values(replacements));
     return replacements;
   }
 
@@ -623,7 +623,7 @@ export async function createStudioViewer(viewport) {
       draw();
     },
     async setHardware(configuration) {
-      if (configuration.horn || configuration.shoes) {
+      if (configuration.horn !== 'cosmos' || configuration.shoes) {
         alternatives ??= loadAlternatives().catch(error => {
           alternatives = undefined;
           throw error;
@@ -643,10 +643,11 @@ export async function createStudioViewer(viewport) {
       const [replacements] = await Promise.all([alternatives, ...accessoryRequests]);
       if (replacements) {
         for (const [slot, parts] of Object.entries(stockParts)) {
-          for (const part of parts) part.visible = !configuration[slot];
-          replacements[slot].visible = Boolean(configuration[slot]);
+          for (const part of parts) part.visible = slot === 'horn' ? configuration.horn === 'cosmos' : !configuration[slot];
+          replacements[slot].visible = configuration[slot] === true;
         }
       }
+      if (replacements) replacements.og.visible = !configuration.horn;
       for (const [id, assembly] of flightHardware) assembly.visible = Boolean(configuration[id]);
       if (!configuration.motors && spinFrame) setMotorSpin(false);
       updatePropExposure();
