@@ -94,7 +94,7 @@ function createCard(name, thumbnail, onSelect, onRemove) {
 if (!savedCollection.defaultRemoved) {
   const preset = defaultPreset;
   const name = preset[0];
-  const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp?v=cosmos-default';
+  const thumbnail = 'assets/tpu-presets/' + name.toLowerCase().replace(' & ', '-').replaceAll(' ', '-') + '.webp?v=cosmos-v6';
   const card = createCard(name, thumbnail, radio => {
     selectCard(radio);
     applyPreset(preset);
@@ -335,7 +335,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=cosmos-default');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=cosmos-v6-fixed');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);
