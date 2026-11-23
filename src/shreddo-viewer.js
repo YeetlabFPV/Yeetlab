@@ -204,7 +204,9 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
   const scene = new Scene();
   const camera = new PerspectiveCamera(25, 1, 1, 4000);
   const cameraPosition = new Vector3(-325, 245, 405);
-  const cameraDirection = cameraPosition.clone().normalize();
+  const restingOrbit = new Spherical().setFromVector3(cameraPosition);
+  const cameraOrbit = new Spherical();
+  const cameraOffset = new Vector3();
   camera.position.copy(cameraPosition);
   camera.lookAt(0, 0, 0);
   camera.updateMatrixWorld();
@@ -223,6 +225,25 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
   const schedule = () => {
     if (!frame) frame = requestAnimationFrame(render);
   };
+  const hoverTarget = new Vector3();
+  const hover = new Vector3();
+  function resetOrbit() {
+    hoverTarget.set(0, 0, 0);
+    schedule();
+  }
+  function pointOrbit(event) {
+    if (event.pointerType !== 'mouse') return;
+    const bounds = renderer.domElement.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+    if (x < 0 || x > 1 || y < 0 || y > 1) {
+      resetOrbit();
+      return;
+    }
+    hoverTarget.set((x - .5) * .17, (y - .5) * .12, 0);
+    schedule();
+  }
+
   function release() {
     if (released) return;
     released = true;
@@ -231,6 +252,8 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
     document.removeEventListener('visibilitychange', schedule);
     observer?.disconnect();
     window.removeEventListener('scroll', schedule);
+    stage.removeEventListener('pointermove', pointOrbit);
+    stage.removeEventListener('pointerleave', resetOrbit);
     renderer.domElement.removeEventListener('webglcontextlost', release);
     renderer.domElement.remove();
     section.classList.remove('has-shreddo-model');
@@ -336,7 +359,13 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
         * MathUtils.lerp(1.08, narrow ? 1.12 : 1.14, progress);
       const nearDepth = bounds.max.z - projectedOrigin.z;
       const distance = vertical / Math.tan(MathUtils.degToRad(camera.fov / 2)) + nearDepth * .65;
-      camera.position.copy(target.applyMatrix4(worldAxes)).addScaledVector(cameraDirection, distance);
+      const orbitMoving = hover.distanceToSquared(hoverTarget) > 0.000001;
+      if (orbitMoving) hover.lerp(hoverTarget, .16);
+      else hover.copy(hoverTarget);
+      cameraOrbit.set(distance, restingOrbit.phi + hover.y, restingOrbit.theta + hover.x);
+      target.applyMatrix4(worldAxes);
+      camera.position.copy(target).add(cameraOffset.setFromSpherical(cameraOrbit));
+      camera.lookAt(target);
       camera.aspect = actualAspect;
       camera.updateProjectionMatrix();
       const now = performance.now();
@@ -355,7 +384,7 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
         material.color.lerpColors(palette[zone], nextPalette[zone], blend);
       });
       renderer.render(scene, camera);
-      if (phase >= period - fadeDuration) schedule();
+      if (orbitMoving || phase >= period - fadeDuration) schedule();
       else colorTimer = setTimeout(schedule, period - fadeDuration - phase);
     };
 
@@ -371,6 +400,8 @@ export async function mountShreddo({ section, stage, media, header, signal }) {
     observer.observe(stage);
     document.addEventListener('visibilitychange', schedule);
     window.addEventListener('scroll', schedule, { passive: true });
+    stage.addEventListener('pointermove', pointOrbit, { passive: true });
+    stage.addEventListener('pointerleave', resetOrbit);
     renderer.domElement.addEventListener('webglcontextlost', release);
     return release;
   } catch (error) {
