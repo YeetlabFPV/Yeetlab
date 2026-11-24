@@ -41,7 +41,8 @@ function add(array, type, componentType, count, target, bounds) {
 // STL print coordinates map to the assembly's millimetre axes.
 geometry.rotateX(-Math.PI / 2);
 geometry.rotateY(Math.PI / 2);
-geometry.translate(-48.135, 24, 0);
+geometry.rotateY(Math.PI);
+geometry.translate(-49.557157287597656, 24, 0);
 geometry.translate(...horn.translation.map(value => -value));
 geometry.scale(...horn.scale.map(value => 1 / value));
 geometry.normalizeNormals();
