@@ -20,7 +20,7 @@ try {
   // The production Content Security Policy can deny WebAssembly compilation.
 }
 
-const modelUrl = new URL('./shreddo.glb?v=cosmos-v6', import.meta.url);
+const modelUrl = new URL('./shreddo.glb?v=cosmos-v30', import.meta.url);
 // The rear braces echo the canopy colour. The camera inserts echo the shoes.
 const paletteFromPreset = ([, first, second]) => [new Color(first), new Color(second)];
 const defaultPalette = paletteFromPreset(heroPresets[0]);

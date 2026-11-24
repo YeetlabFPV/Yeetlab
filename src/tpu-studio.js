@@ -335,7 +335,7 @@ function unavailable() {
 }
 
 try {
-  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=cosmos-v6-fixed');
+  const { createStudioViewer } = await import('../assets/shreddo-hero/viewer.js?v=cosmos-v30');
   viewer = await createStudioViewer(viewport);
   viewport.querySelector('canvas').addEventListener('webglcontextlost', unavailable);
   applyPreset(defaultPreset);
