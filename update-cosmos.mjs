@@ -57,7 +57,7 @@ primitive.attributes = {
 };
 const indices = indexed.index.array;
 primitive.indices = add(indices, 'SCALAR', indices.BYTES_PER_ELEMENT === 2 ? 5123 : 5125, indices.length, 34963);
-horn.name = 'Cosmos-v30';
+horn.name = 'Cosmos-with-brace';
 doc.buffers[0].byteLength = offset;
 doc.buffers[1].byteLength = fallback;
 const json = Buffer.from(JSON.stringify(doc));
