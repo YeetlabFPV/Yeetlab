@@ -505,6 +505,23 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
+@media (min-width: 900px) {
+  .video-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+  }
+
+  .video-section h2 {
+    font-size: 2.75rem;
+  }
+
+  .video-section .video-embed {
+    margin-top: 0;
+  }
+}
+
 .box-section {
   display: grid;
   grid-template-columns: minmax(320px, 1.05fr) minmax(0, 0.95fr);
