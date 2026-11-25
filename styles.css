@@ -448,6 +448,11 @@ h3 {
     radial-gradient(ellipse at 50% 45%, #5a586b, #262630 85%);
 }
 
+.frame-details img {
+  display: block;
+  padding: 0;
+}
+
 .spec-grid h3 {
   margin: 18px 18px 8px;
 }
@@ -1284,7 +1289,7 @@ legend {
     gap: 10px;
   }
 
-  .spec-grid img {
+  .spec-grid:not(.frame-details) img {
     padding: 6px;
   }
 
